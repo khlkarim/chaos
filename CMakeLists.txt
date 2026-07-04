@@ -10,6 +10,7 @@ target_sources(fractal PRIVATE
   ./test/fractal.cpp
   ./src/geometry/Circle.cpp
   ./src/geometry/Rectangle.cpp
+  ./src/geometry/Vector.cpp
   ./src/renderer/Renderer.cpp
 )
 

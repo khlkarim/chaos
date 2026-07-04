@@ -23,13 +23,8 @@ void Circle::draw() {
 
   for (int j = cj - r; j <= cj + r; j++) {
     for (int i = ci - r; i <= ci + r; i++) {
-      if (j >= 0 && j < h && i >= 0 && i < w && (j - cj) * (j - cj) + (i - ci) * (i - ci) <= r * r) {
-        u32 r = color.x * 255.999;
-        u32 g = color.y * 255.999;
-        u32 b = color.z * 255.999;
-        u32 a = color.w * 255.999;
-
-        renderer->pixels[j * w + i] = r | (g << 8) | (b << 16) | (a << 24);
+      if ((j - cj) * (j - cj) + (i - ci) * (i - ci) <= r * r) {
+        renderer->setColor(j, i, color);
       }
     }
   }

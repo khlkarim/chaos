@@ -18,6 +18,19 @@ int Renderer::getWidth() const { return width; }
 int Renderer::getHeight() const { return width / aspectRatio; }
 float Renderer::getAspectRatio() const { return aspectRatio; }
 
+void Renderer::setColor(const int &row, const int &col, const Color &color) {
+  int height = getHeight();
+  if (row < 0 || row >= height || col < 0 || col >= width) {
+    return;
+  }
+
+  u32 r = color.x * 255.999;
+  u32 g = color.y * 255.999;
+  u32 b = color.z * 255.999;
+  u32 a = color.w * 255.999;
+  pixels[row * width + col] = r | (g << 8) | (b << 16) | (a << 24);
+}
+
 void Renderer::render(const std::string path, const FileFormat format) const {
   std::cout << "Exporting image..." << std::endl;
 

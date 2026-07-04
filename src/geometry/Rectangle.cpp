@@ -24,14 +24,7 @@ void Rectangle::draw() {
 
   for (int j = cj - rh / 2; j <= cj + rh / 2; j++) {
     for (int i = ci - rw / 2; i <= ci + rw / 2; i++) {
-      if (j >= 0 && j < h && i >= 0 && i < w) {
-        u32 r = color.x * 255.999;
-        u32 g = color.y * 255.999;
-        u32 b = color.z * 255.999;
-        u32 a = color.w * 255.999;
-
-        renderer->pixels[j * w + i] = r | (g << 8) | (b << 16) | (a << 24);
-      }
+      renderer->setColor(j, i, color);
     }
   }
 }

@@ -9,13 +9,13 @@
 
 #define IMAGE_WIDTH 720
 #define IMAGE_HEIGHT 720
-#define OUTPUT_FILE_PATH "img-12.png"
+#define OUTPUT_FILE_PATH "img-14.png"
 #define OUTPUT_FILE_FORMAT PNG
 
 #define FRACTAL_DEPTH 7
 #define FRACTAL_DEGREE 9
-#define FRACTAL_SPREAD 3
-#define FRACTAL_USE_RECTANGLES 0
+#define FRACTAL_SPREAD 2
+#define FRACTAL_USE_RECTANGLES 1
 
 std::vector<Vec2> getDirections(const int degree);
 void drawFractalRectangle(Rectangle &r, const int depth, const int degree, const float spread);
@@ -46,19 +46,6 @@ int main() {
   renderer->render(OUTPUT_FILE_PATH, OUTPUT_FILE_FORMAT);
 }
 
-std::vector<Vec2> getDirections(const int degree) {
-  std::vector<Vec2> directions;
-
-  float theta = 0;
-  float thetaStep = 2 * PI / degree;
-  for (int i = 0; i < degree; i++) {
-    directions.push_back({.x = std::cos(theta), .y = std::sin(theta)});
-    theta += thetaStep;
-  }
-
-  return directions;
-}
-
 void drawFractalRectangle(Rectangle &r, const int depth, const int degree, const float spread) {
   if (depth == 0) {
     return;
@@ -69,19 +56,19 @@ void drawFractalRectangle(Rectangle &r, const int depth, const int degree, const
   r.color.z *= 0.8;
 
   r.draw();
+
+  Vec2 wh = {r.width, r.height};
   std::vector<Vec2> directions = getDirections(degree);
 
   r.width /= 2;
   r.height /= 2;
   for (int i = 0; i < directions.size(); i++) {
-    r.center.x += directions[i].x * r.width * spread;
-    r.center.y += directions[i].y * r.height * spread;
+    r.center += directions[i] * wh * spread;
     drawFractalRectangle(r, depth - 1, degree, spread);
-    r.center.x -= directions[i].x * r.width * spread;
-    r.center.y -= directions[i].y * r.height * spread;
+    r.center -= directions[i] * wh * spread;
   }
-  r.width *= 2;
-  r.height *= 2;
+  r.width = wh.x;
+  r.height = wh.y;
 }
 
 void drawFractalCircle(Circle &c, const int depth, const int degree, const float spread) {
@@ -94,15 +81,28 @@ void drawFractalCircle(Circle &c, const int depth, const int degree, const float
   c.color.z *= 0.8;
 
   c.draw();
+
+  float r = c.radius;
   std::vector<Vec2> directions = getDirections(degree);
 
   c.radius /= 2;
   for (int i = 0; i < directions.size(); i++) {
-    c.center.x += directions[i].x * c.radius * spread;
-    c.center.y += directions[i].y * c.radius * spread;
+    c.center += directions[i] * r * spread;
     drawFractalCircle(c, depth - 1, degree, spread);
-    c.center.x -= directions[i].x * c.radius * spread;
-    c.center.y -= directions[i].y * c.radius * spread;
+    c.center -= directions[i] * r * spread;
   }
-  c.radius *= 2;
+  c.radius = r;
+}
+
+std::vector<Vec2> getDirections(const int degree) {
+  std::vector<Vec2> directions;
+
+  float theta = 0;
+  float thetaStep = 2 * PI / degree;
+  for (int i = 0; i < degree; i++) {
+    directions.push_back({.x = std::cos(theta), .y = std::sin(theta)});
+    theta += thetaStep;
+  }
+
+  return directions;
 }

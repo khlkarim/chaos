@@ -1,5 +1,6 @@
 #pragma once
 
+#include "geometry/Vector.h"
 #include <string>
 #include <vector>
 
@@ -15,6 +16,7 @@ public:
   int getWidth() const;
   int getHeight() const;
   float getAspectRatio() const;
+  void setColor(const int &i, const int &j, const Color &color);
   void render(const std::string path, const FileFormat format) const;
 
 private:
