@@ -3,13 +3,11 @@
 
 #include "geometry/Circle.h"
 #include "geometry/Rectangle.h"
-#include "renderer/Renderer.h"
-
-#define PI 3.14159265359
+#include "utils/math.h"
 
 #define IMAGE_WIDTH 720
 #define IMAGE_HEIGHT 720
-#define OUTPUT_FILE_PATH "img-14.png"
+#define OUTPUT_FILE_PATH "fractal-output-00.png"
 #define OUTPUT_FILE_FORMAT PNG
 
 #define FRACTAL_DEPTH 7
@@ -43,7 +41,7 @@ int main() {
   drawFractalCircle(shape, FRACTAL_DEPTH, FRACTAL_DEGREE, FRACTAL_SPREAD);
 #endif
 
-  renderer->render(OUTPUT_FILE_PATH, OUTPUT_FILE_FORMAT);
+  renderer->write(OUTPUT_FILE_PATH, OUTPUT_FILE_FORMAT);
 }
 
 void drawFractalRectangle(Rectangle &r, const int depth, const int degree, const float spread) {
@@ -100,7 +98,7 @@ std::vector<Vec2> getDirections(const int degree) {
   float theta = 0;
   float thetaStep = 2 * PI / degree;
   for (int i = 0; i < degree; i++) {
-    directions.push_back({.x = std::cos(theta), .y = std::sin(theta)});
+    directions.push_back({std::cos(theta), std::sin(theta)});
     theta += thetaStep;
   }
 

@@ -19,6 +19,5 @@ Color Scene::getColor(const Ray &ray) const {
   float g = std::abs(dot(right, d));
   float b = std::abs(dot(front, d));
 
-  float s = std::abs(dot({0, 1, 0}, d));
-  return {s, s, s, 1};
+  return {r, g, b, 1};
 }
