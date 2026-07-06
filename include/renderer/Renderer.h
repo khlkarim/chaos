@@ -1,8 +1,10 @@
 #pragma once
 
-#include "geometry/Vector.h"
 #include <string>
 #include <vector>
+
+#include "geometry/Vector.h"
+#include "renderer/Scene.h"
 
 using u32 = unsigned int;
 enum FileFormat { PPM, PNG, JPEG };
@@ -11,15 +13,19 @@ class Renderer {
 public:
   std::vector<u32> pixels;
 
+  Renderer() = default;
   Renderer(const int w, const int h);
 
   int getWidth() const;
   int getHeight() const;
   float getAspectRatio() const;
-  void setColor(const int &i, const int &j, const Color &color);
-  void render(const std::string path, const FileFormat format) const;
+
+  void render(const Scene &scene);
+  void setColor(const int &row, const int &col, const Color &color);
+
+  void write(const std::string &path, const FileFormat &format) const;
 
 private:
-  int width;
-  float aspectRatio;
+  int width = 1280;
+  float aspectRatio = 1280. / 720.;
 };
