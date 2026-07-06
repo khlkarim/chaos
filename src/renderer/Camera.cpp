@@ -1,9 +1,7 @@
 #include <cmath>
 
-#include "geometry/Vector.h"
 #include "renderer/Camera.h"
-
-#define PI 3.14159265359
+#include "utils/math.h"
 
 float Camera::getFov() const { return fov; }
 void Camera::setFov(float f) { fov = f; }
@@ -21,9 +19,13 @@ Vec3 Camera::getPosition() const { return position; }
 void Camera::setPosition(Vec3 v) { position = v; }
 
 Vec3 Camera::getFront() const {
-  float y = sin(pitch * PI / 180.);
-  float z = -cos(yaw * PI / 180.) * cos(pitch * PI / 180.);
-  float x = sin(yaw * PI / 180.) * cos(pitch * PI / 180.);
+  float a = toRadians(pitch);
+  float b = toRadians(yaw);
+
+  float y = sin(a);
+  float z = -cos(b) * cos(a);
+  float x = sin(b) * cos(a);
+
   return {x, y, z};
 }
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "geometry/Ray.h"
-#include "geometry/Vector.h"
 #include "renderer/Camera.h"
 
 class Scene {

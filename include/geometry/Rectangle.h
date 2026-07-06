@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Shape.h"
-#include "Vector.h"
 
 class Rectangle : public Shape {
 public:

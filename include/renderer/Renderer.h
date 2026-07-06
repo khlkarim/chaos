@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 
-#include "geometry/Vector.h"
 #include "renderer/Scene.h"
 
 using u32 = unsigned int;

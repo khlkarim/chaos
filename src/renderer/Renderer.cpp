@@ -1,12 +1,10 @@
+#include <cmath>
 #include <fstream>
 #include <iostream>
 
 #include "renderer/Renderer.h"
-
-#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "utils/math.h"
 #include "utils/stb_image_write.h"
-
-#define PI 3.14159265359
 
 void write_ppm(const char *filename, const int w, const int h, const int channels, const u32 *data);
 
@@ -28,7 +26,7 @@ void Renderer::render(const Scene &scene) {
   const Camera &camera = scene.getCamera();
   float fov = camera.getFov();
   float np = camera.getNearPlane();
-  float maxY = std::tan(fov * PI / 180.) * np;
+  float maxY = std::tan(toRadians(fov)) * np;
 
   Vec3 up = camera.getUp();
   Vec3 front = camera.getFront();
