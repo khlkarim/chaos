@@ -3,17 +3,18 @@
 
 #include "geometry/Circle.h"
 #include "geometry/Rectangle.h"
+#include "renderer/Renderer.h"
 #include "utils/math.h"
 
-#define IMAGE_WIDTH 720
-#define IMAGE_HEIGHT 720
-#define OUTPUT_FILE_PATH "fractal-output-00.png"
-#define OUTPUT_FILE_FORMAT PNG
+constexpr int IMAGE_WIDTH = 720;
+constexpr int IMAGE_HEIGHT = 720;
+constexpr FileFormat OUTPUT_FILE_FORMAT = PNG;
+constexpr const char *OUTPUT_FILE_PATH = "fractal-output-01.png";
 
-#define FRACTAL_DEPTH 7
-#define FRACTAL_DEGREE 9
-#define FRACTAL_SPREAD 2
-#define FRACTAL_USE_RECTANGLES 1
+constexpr int FRACTAL_DEPTH = 7;
+constexpr int FRACTAL_DEGREE = 9;
+constexpr int FRACTAL_SPREAD = 2;
+constexpr bool FRACTAL_USE_RECTANGLES = true;
 
 std::vector<Vec2> getDirections(const int degree);
 void drawFractalRectangle(Rectangle &r, const int depth, const int degree, const float spread);
@@ -22,24 +23,24 @@ void drawFractalCircle(Circle &c, const int depth, const int degree, const float
 int main() {
   auto renderer = std::make_shared<Renderer>(IMAGE_WIDTH, IMAGE_HEIGHT);
 
-#if FRACTAL_USE_RECTANGLES
-  Rectangle shape;
-  shape.width = 0.25;
-  shape.height = 0.25;
-  shape.center = {0, 0};
-  shape.color = {0.1, 0.9, 0.8, 1};
-  shape.setRenderer(renderer);
+  if constexpr (FRACTAL_USE_RECTANGLES) {
+    Rectangle shape;
+    shape.width = 0.25;
+    shape.height = 0.25;
+    shape.center = {0, 0};
+    shape.color = {0.1, 0.9, 0.8, 1};
+    shape.setRenderer(renderer);
 
-  drawFractalRectangle(shape, FRACTAL_DEPTH, FRACTAL_DEGREE, FRACTAL_SPREAD);
-#else
-  Circle shape;
-  shape.radius = 0.125;
-  shape.center = {0, 0};
-  shape.color = {1, 1, 0, 1};
-  shape.setRenderer(renderer);
+    drawFractalRectangle(shape, FRACTAL_DEPTH, FRACTAL_DEGREE, FRACTAL_SPREAD);
+  } else {
+    Circle shape;
+    shape.radius = 0.125;
+    shape.center = {0, 0};
+    shape.color = {1, 1, 0, 1};
+    shape.setRenderer(renderer);
 
-  drawFractalCircle(shape, FRACTAL_DEPTH, FRACTAL_DEGREE, FRACTAL_SPREAD);
-#endif
+    drawFractalCircle(shape, FRACTAL_DEPTH, FRACTAL_DEGREE, FRACTAL_SPREAD);
+  }
 
   renderer->write(OUTPUT_FILE_PATH, OUTPUT_FILE_FORMAT);
 }

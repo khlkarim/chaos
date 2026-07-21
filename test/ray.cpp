@@ -1,9 +1,9 @@
 #include "renderer/Renderer.h"
 
-#define IMAGE_WIDTH 1280
-#define IMAGE_HEIGHT 720
-#define OUTPUT_FILE_PATH "ray-output-00.png"
-#define OUTPUT_FILE_FORMAT PNG
+constexpr int IMAGE_WIDTH = 1280;
+constexpr int IMAGE_HEIGHT = 720;
+constexpr FileFormat OUTPUT_FILE_FORMAT = PNG;
+constexpr const char *OUTPUT_FILE_PATH = "ray-output-01.png";
 
 int main() {
   Scene scene;
