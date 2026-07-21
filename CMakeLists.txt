@@ -4,40 +4,37 @@ project(chaos LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_executable(fractal)
+set(TESTS
+  fractal
+  ray
+  model
+  sphere
+  triangle
+)
 
-target_sources(fractal PRIVATE
-  ./test/fractal.cpp
+set(SOURCES
   ./src/geometry/Circle.cpp
+  ./src/geometry/Mesh.cpp
   ./src/geometry/Ray.cpp
   ./src/geometry/Rectangle.cpp
+  ./src/geometry/Sphere.cpp
   ./src/geometry/Vector.cpp
+
   ./src/renderer/Camera.cpp
   ./src/renderer/Renderer.cpp
   ./src/renderer/Scene.cpp
+
   ./src/utils/math.cpp
+  ./src/utils/AssetLoader.cpp
   ./src/utils/stb_image_write.cpp
 )
 
-target_include_directories(fractal PRIVATE
-  ./include
-)
+function(build_test test)
+  add_executable(${test})
+  target_sources(${test} PRIVATE ./test/${test}.cpp ${SOURCES})
+  target_include_directories(${test} PRIVATE ./include)
+endfunction()
 
-add_executable(ray)
-
-target_sources(ray PRIVATE
-  ./test/ray.cpp
-  ./src/geometry/Circle.cpp
-  ./src/geometry/Ray.cpp
-  ./src/geometry/Rectangle.cpp
-  ./src/geometry/Vector.cpp
-  ./src/renderer/Camera.cpp
-  ./src/renderer/Renderer.cpp
-  ./src/renderer/Scene.cpp
-  ./src/utils/math.cpp
-  ./src/utils/stb_image_write.cpp
-)
-
-target_include_directories(ray PRIVATE
-  ./include
-)
+foreach(item IN LISTS TESTS)
+  build_test(${item})
+endforeach()
