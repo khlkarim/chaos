@@ -14,38 +14,92 @@ Renderer::Renderer(const int w, const int h) {
   pixels = std::vector<u32>(h * w, 0xffu << 24);
 }
 
+int Renderer::getHeight() const {
+  int height = width / aspectRatio;
+  return std::max(1, height);
+}
+
 int Renderer::getWidth() const { return width; }
-int Renderer::getHeight() const { return width / aspectRatio; }
 float Renderer::getAspectRatio() const { return aspectRatio; }
+
+int Renderer::getMaxDepth() const { return maxDepth; }
+void Renderer::setMaxDepth(int depth) { maxDepth = depth; }
+
+int Renderer::getSamplesPerPixel() const { return samplesPerPixel; }
+void Renderer::setSamplesPerPixel(int spp) { samplesPerPixel = spp; }
 
 void Renderer::render(const Scene &scene) {
   int w = getWidth();
   int h = getHeight();
   float a = getAspectRatio();
-
   const Camera &camera = scene.getCamera();
-  float fov = camera.getFov();
-  float np = camera.getNearPlane();
-  float maxY = std::tan(toRadians(fov)) * np;
+
+  std::cout << "Image Width: " << w << std::endl;
+  std::cout << "Image Height: " << h << std::endl;
+  std::cout << std::endl;
 
   Vec3 up = camera.getUp();
   Vec3 front = camera.getFront();
   Vec3 right = camera.getRight();
   Vec3 pos = camera.getPosition();
 
+  std::cout << "Camera Up: " << up << std::endl;
+  std::cout << "Camera Right: " << right << std::endl;
+  std::cout << "Camera Front: " << front << std::endl;
+  std::cout << "Camera Position: " << pos << std::endl;
+  std::cout << std::endl;
+
+  float fov = camera.getFov();
+  float np = camera.getNearPlane();
+  float viewportHeight = 2.0 * std::tan(toRadians(fov)) * np;
+  float viewportWidth = a * viewportHeight;
+
+  std::cout << "Viewport Width: " << viewportWidth << std::endl;
+  std::cout << "Viewport Height: " << viewportHeight << std::endl;
+  std::cout << std::endl;
+
+  Vec3 u = viewportWidth * right;
+  Vec3 v = -viewportHeight * up;
+  Vec3 dU = u / w;
+  Vec3 dV = v / h;
+  Vec3 pixel00 = pos + np * front - 0.5 * (u + v) + 0.5 * (dU + dV);
+
+  std::cout << "Pixels[0, 0]: " << pixel00 << std::endl;
+  std::cout << std::endl;
+
+  int workloadProgress = 0;
+  float workloadProgressPercentage = 0;
+  int totalWorkload = h * w;
+
   for (int j = 0; j < h; j++) {
-    float y = (0.5 - (float)j / h) * maxY;
-
     for (int i = 0; i < w; i++) {
-      float x = ((float)i / w - 0.5) * a * maxY;
+      Color color;
 
-      Vec3 o = pos + np * front + y * up + x * right;
-      Vec3 d = normalize(o - pos);
-      Ray r(o, d);
+      for (int k = 0; k < samplesPerPixel; k++) {
+        Vec2 rand = Vec2::getRandomUnitSquare();
 
-      setColor(j, i, scene.getColor(r));
+        Vec3 origin = pixel00 + (i + rand.x) * dU + (j + rand.y) * dV;
+        Vec3 direction = normalize(origin - pos);
+        Ray r(origin, direction);
+
+        color += scene.getColor(r, maxDepth);
+      }
+
+      color /= samplesPerPixel;
+      setColor(j, i, color);
+
+      workloadProgress++;
+      float a = (float)workloadProgress / totalWorkload;
+      float p = ((int)(a * 10)) / 10.;
+
+      if (p > workloadProgressPercentage) {
+        workloadProgressPercentage = p;
+        std::cout << "Progress: " << workloadProgressPercentage * 100 << "%" << std::endl;
+      }
     }
   }
+
+  std::cout << std::endl;
 }
 
 void Renderer::write(const std::string &path, const FileFormat &format) const {
@@ -92,8 +146,8 @@ void write_ppm(const char *filename, const int w, const int h, const int channel
 
   u32 maxVal = 255;
   std::string magicNumber = "P3";
-
   std::ofstream f(filename);
+
   f << magicNumber << std::endl;
   f << w << " " << h << std::endl;
   f << maxVal << std::endl;
@@ -106,4 +160,6 @@ void write_ppm(const char *filename, const int w, const int h, const int channel
     }
     f << std::endl;
   }
+
+  f.close();
 }

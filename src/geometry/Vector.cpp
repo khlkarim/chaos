@@ -1,6 +1,14 @@
 #include <cmath>
 
 #include "geometry/Vector.h"
+#include "utils/math.h"
+
+Vec2 Vec2::getRandomUnitSquare() { return {getRandomFLoat(), getRandomFLoat()}; }
+
+Vec2 Vec2::getRandomUnitCircle() {
+  float theta = 2 * PI * getRandomFLoat();
+  return {std::cos(theta), std::sin(theta)};
+}
 
 float Vec2::length() const { return std::sqrt(length2()); }
 float Vec2::length2() const { return x * x + y * y; }
@@ -113,6 +121,19 @@ Vec2 operator/(const Vec2 &v, const float &a) {
       v.x / a,
       v.y / a,
   };
+}
+
+std::ostream &operator<<(std::ostream &os, const Vec2 &v) {
+  os << "(" << v.x << ", " << v.y << ")";
+  return os;
+}
+
+Vec3 Vec3::getRandomUnitCube() { return {getRandomFLoat(), getRandomFLoat(), getRandomFLoat()}; }
+
+Vec3 Vec3::getRandomUnitSphere() {
+  float phi = 2 * PI * getRandomFLoat();
+  float theta = 2 * PI * getRandomFLoat();
+  return {std::cos(theta) * std::cos(phi), std::sin(theta) * std::cos(phi), std::sin(phi)};
 }
 
 float Vec3::length() const { return std::sqrt(length2()); }
@@ -250,6 +271,11 @@ Vec3 operator/(const Vec3 &v, const float &a) {
       v.y / a,
       v.z / a,
   };
+}
+
+std::ostream &operator<<(std::ostream &os, const Vec3 &v) {
+  os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+  return os;
 }
 
 float Vec4::length() const { return std::sqrt(length2()); }
@@ -395,4 +421,9 @@ Vec4 operator/(const Vec4 &v, const float &a) {
       v.z / a,
       v.w / a,
   };
+}
+
+std::ostream &operator<<(std::ostream &os, const Vec4 &v) {
+  os << "(" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << ")";
+  return os;
 }

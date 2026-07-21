@@ -19,6 +19,12 @@ public:
   int getHeight() const;
   float getAspectRatio() const;
 
+  int getMaxDepth() const;
+  void setMaxDepth(int depth);
+
+  int getSamplesPerPixel() const;
+  void setSamplesPerPixel(int spp);
+
   void render(const Scene &scene);
   void setColor(const int &row, const int &col, const Color &color);
 
@@ -27,4 +33,7 @@ public:
 private:
   int width = 1280;
   float aspectRatio = 1280. / 720.;
+
+  int maxDepth = 10;
+  int samplesPerPixel = 10;
 };

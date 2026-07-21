@@ -1,11 +1,16 @@
 #pragma once
 
+#include <ostream>
+
 struct Vec2 {
   float x = 0, y = 0;
 
   Vec2() = default;
   Vec2(float a) : x(a), y(a) {}
   Vec2(float x, float y) : x(x), y(y) {}
+
+  static Vec2 getRandomUnitSquare();
+  static Vec2 getRandomUnitCircle();
 
   float length() const;
   float length2() const;
@@ -31,6 +36,8 @@ struct Vec2 {
   friend Vec2 operator-(const Vec2 &v, const float &a);
   friend Vec2 operator*(const Vec2 &v, const float &a);
   friend Vec2 operator/(const Vec2 &v, const float &a);
+
+  friend std::ostream &operator<<(std::ostream &os, const Vec2 &v);
 };
 
 struct Vec3 {
@@ -39,6 +46,9 @@ struct Vec3 {
   Vec3() = default;
   Vec3(float a) : x(a), y(a), z(a) {}
   Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
+
+  static Vec3 getRandomUnitCube();
+  static Vec3 getRandomUnitSphere();
 
   float length() const;
   float length2() const;
@@ -65,6 +75,8 @@ struct Vec3 {
   friend Vec3 operator-(const Vec3 &v, const float &a);
   friend Vec3 operator*(const Vec3 &v, const float &a);
   friend Vec3 operator/(const Vec3 &v, const float &a);
+
+  friend std::ostream &operator<<(std::ostream &os, const Vec3 &v);
 };
 
 struct Vec4 {
@@ -98,6 +110,8 @@ struct Vec4 {
   friend Vec4 operator-(const Vec4 &v, const float &a);
   friend Vec4 operator*(const Vec4 &v, const float &a);
   friend Vec4 operator/(const Vec4 &v, const float &a);
+
+  friend std::ostream &operator<<(std::ostream &os, const Vec4 &v);
 };
 
 using Color = Vec4;
