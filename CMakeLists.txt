@@ -5,27 +5,48 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(TESTS
-  fractal
   ray
+  crt
+  cube
   model
+  entity
   sphere
+  fractal
   triangle
 )
 
 set(SOURCES
-  ./src/geometry/Circle.cpp
-  ./src/geometry/Mesh.cpp
+  ./src/entity/Entity.cpp
+
+  ./src/components/Metadata.cpp
+  ./src/components/Transform.cpp
+  ./src/components/Mesh.cpp
+  ./src/components/Material.cpp
+  ./src/components/SDF.cpp
+
+  ./src/materials/Lambertian.cpp
+  ./src/materials/Metal.cpp
+
   ./src/geometry/Ray.cpp
+  ./src/geometry/Vector.cpp
+  ./src/geometry/Circle.cpp
   ./src/geometry/Rectangle.cpp
   ./src/geometry/Sphere.cpp
-  ./src/geometry/Vector.cpp
 
+  ./src/renderer/Scene.cpp
   ./src/renderer/Camera.cpp
   ./src/renderer/Renderer.cpp
-  ./src/renderer/Scene.cpp
+
+  ./src/skybox/Sky.cpp
+  ./src/skybox/Monochrome.cpp
+
+  ./src/io/IO.cpp
+  ./src/io/CRT.cpp
+  ./src/io/OBJ.cpp
+  ./src/io/PPM.cpp
 
   ./src/utils/math.cpp
-  ./src/utils/AssetLoader.cpp
+  ./src/utils/string.cpp
   ./src/utils/stb_image_write.cpp
 )
 
