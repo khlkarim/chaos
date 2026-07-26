@@ -1,15 +1,15 @@
 #include <cmath>
 #include <memory>
 
+#include "io/IO.h"
+#include "utils/math.h"
 #include "geometry/Circle.h"
 #include "geometry/Rectangle.h"
-#include "renderer/Renderer.h"
-#include "utils/math.h"
 
 constexpr int IMAGE_WIDTH = 720;
 constexpr int IMAGE_HEIGHT = 720;
-constexpr FileFormat OUTPUT_FILE_FORMAT = PNG;
 constexpr const char *OUTPUT_FILE_PATH = "fractal-output-01.png";
+constexpr IO::FileFormat OUTPUT_FILE_FORMAT = IO::FileFormat::PNG;
 
 constexpr int FRACTAL_DEPTH = 7;
 constexpr int FRACTAL_DEGREE = 9;
@@ -42,7 +42,7 @@ int main() {
     drawFractalCircle(shape, FRACTAL_DEPTH, FRACTAL_DEGREE, FRACTAL_SPREAD);
   }
 
-  renderer->write(OUTPUT_FILE_PATH, OUTPUT_FILE_FORMAT);
+  IO::save(*renderer, OUTPUT_FILE_PATH, OUTPUT_FILE_FORMAT);
 }
 
 void drawFractalRectangle(Rectangle &r, const int depth, const int degree, const float spread) {
