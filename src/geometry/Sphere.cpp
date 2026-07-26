@@ -5,11 +5,8 @@
 float Sphere::getRadius() const { return radius; }
 void Sphere::setRadius(float r) { radius = r; }
 
-Vec3 Sphere::getCenter() const { return center; }
-void Sphere::setCenter(Vec3 c) { center = c; }
-
-Intersection Sphere::intersect(const Ray &ray) const {
-  Vec3 oc = center - ray.getOrigin();
+Intersection Sphere::intersect(const Ray &ray, const Transform &transform) const {
+  Vec3 oc = transform.getPosition() - ray.getOrigin();
 
   auto a = dot(ray.getDirection(), ray.getDirection());
   auto b = -2.0 * dot(ray.getDirection(), oc);
@@ -17,12 +14,11 @@ Intersection Sphere::intersect(const Ray &ray) const {
 
   auto discriminant = b * b - 4 * a * c;
 
-  Vec3 normal;
-  float t = -1;
+  Intersection inter;
   if (discriminant >= 0) {
-    t = (-b - std::sqrt(discriminant)) / (2.0 * a);
-    normal = normalize(-1 * oc);
+    inter.t = (-b - std::sqrt(discriminant)) / (2.0 * a);
+    inter.normal = normalize(-1 * oc);
   }
 
-  return {.t = t, .normal = normal};
+  return inter;
 }

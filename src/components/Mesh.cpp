@@ -1,18 +1,29 @@
-#include "geometry/Mesh.h"
+#include "components/Mesh.h"
 #include "utils/math.h"
 
-Intersection Mesh::intersect(const Ray &ray) const {
+Component::Type Mesh::getType() const { return TYPE; }
+
+std::vector<Vertex> &Mesh::getVertices() { return vertices; }
+const std::vector<Vertex> &Mesh::getVertices() const { return vertices; }
+void Mesh::setVertices(const std::vector<Vertex> &v) { vertices = v; }
+
+std::vector<unsigned int> &Mesh::getIndices() { return indices; }
+const std::vector<unsigned int> &Mesh::getIndices() const { return indices; }
+void Mesh::setIndices(const std::vector<unsigned int> &i) { indices = i; }
+
+Intersection Mesh::intersect(const Ray &ray, const Transform &transform) const {
   int closestIdx = -1;
   float closestT = -1;
 
   for (int i = 0; i < indices.size(); i += 3) {
     std::vector<Vertex> tri(3);
+
     for (int j = 0; j < 3; j++) {
       tri[j] = vertices[indices[i + j]];
-      tri[j].position = tri[j].position * transform.scale + transform.position;
+      tri[j].position = tri[j].position * transform.getScale() + transform.getPosition();
     }
 
-    Vec3 normal = tri[0].normal;
+    Vec3 normal = cross(tri[1].position - tri[0].position, tri[2].position - tri[0].position);
     float distance = -dot(tri[0].position, normal);
     Vec3 rayDir = ray.getDirection(), rayOrig = ray.getOrigin();
 
@@ -62,10 +73,11 @@ Intersection Mesh::intersect(const Ray &ray) const {
     }
   }
 
-  Vec3 normal;
+  Intersection inter;
   if (closestIdx != -1) {
-    normal = vertices[indices[closestIdx]].normal;
+    inter.t = closestT;
+    inter.normal = vertices[indices[closestIdx]].normal;
   }
 
-  return {.t = closestT, .normal = normal};
+  return inter;
 }

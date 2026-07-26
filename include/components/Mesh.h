@@ -1,0 +1,32 @@
+#pragma once
+
+#include <vector>
+
+#include "geometry/Ray.h"
+#include "geometry/Vertex.h"
+#include "components/Transform.h"
+#include "geometry/Intersection.h"
+
+class Mesh : public Component {
+public:
+  static const Component::Type TYPE = Component::Type::MESH;
+  Type getType() const override;
+
+  Mesh() = default;
+  Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices)
+      : vertices(vertices), indices(indices) {}
+
+  std::vector<Vertex> &getVertices();
+  const std::vector<Vertex> &getVertices() const;
+  void setVertices(const std::vector<Vertex> &v);
+
+  std::vector<unsigned int> &getIndices();
+  const std::vector<unsigned int> &getIndices() const;
+  void setIndices(const std::vector<unsigned int> &i);
+
+  Intersection intersect(const Ray &ray, const Transform &transform = Transform()) const;
+
+private:
+  std::vector<Vertex> vertices;
+  std::vector<unsigned int> indices;
+};

@@ -1,20 +1,16 @@
 #pragma one
 
-#include "renderer/Entity.h"
+#include "components/SDF.h"
 
-class Sphere : public Entity {
+class Sphere : public SDF {
 public:
-  Sphere(float r, Vec3 c) : radius(r), center(c) {}
+  Sphere(float r = 1) : radius(r) {}
 
   float getRadius() const;
   void setRadius(float r);
 
-  Vec3 getCenter() const;
-  void setCenter(Vec3 c);
-
-  Intersection intersect(const Ray &ray) const override;
+  Intersection intersect(const Ray &ray, const Transform &transform) const override;
 
 private:
   float radius;
-  Vec3 center;
 };
