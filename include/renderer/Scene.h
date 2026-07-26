@@ -1,15 +1,14 @@
 #pragma once
 
 #include <memory>
-#include <vector>
 
+#include "skybox/Sky.h"
+#include "entity/Entity.h"
 #include "renderer/Camera.h"
-#include "renderer/Entity.h"
+#include "geometry/Intersection.h"
 
 class Scene {
 public:
-  std::vector<std::shared_ptr<Entity>> entities;
-
   Scene() = default;
   explicit Scene(Camera c);
 
@@ -17,8 +16,18 @@ public:
   const Camera &getCamera() const;
   void setCamera(Camera camera);
 
-  Color getColor(const Ray &r, int depth) const;
+  EntityManager &getEntityManager();
+  const EntityManager &getEntityManager() const;
+  void setEntityManager(EntityManager em);
+
+  std::shared_ptr<Skybox> getSkybox();
+  void setSkybox(std::shared_ptr<Skybox> s);
+
+  Intersection intersect(const Ray &ray);
+  Color getColor(const Ray &ray, int depth);
 
 private:
   Camera camera;
+  EntityManager em;
+  std::shared_ptr<Skybox> skybox = std::make_shared<Sky>();
 };
