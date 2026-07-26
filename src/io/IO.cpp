@@ -33,18 +33,6 @@ void IO::save(const Renderer &renderer, const std::string &path, FileFormat form
   }
 }
 
-void IO::save(const Scene &scene, const std::string &path, FileFormat format) {
-  std::cout << "Saving scene to: " << path << std::endl;
-
-  switch (format) {
-  case CRT:
-    CRT::save(scene, path);
-    break;
-  default:
-    std::cout << "Unsupported format." << std::endl;
-  }
-}
-
 void IO::load(Scene &scene, const std::string &path, FileFormat format) {
   std::cout << "Loading scene from: " << path << std::endl;
 

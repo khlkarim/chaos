@@ -12,6 +12,7 @@ constexpr IO::FileFormat INPUT_FILE_FORMAT = IO::FileFormat::CRT;
 int main() {
   Scene scene;
   Renderer renderer(IMAGE_WIDTH, IMAGE_HEIGHT);
+  renderer.setSamplesPerPixel(5);
 
   IO::load(scene, INPUT_FILE_PATH, INPUT_FILE_FORMAT);
   renderer.render(scene);

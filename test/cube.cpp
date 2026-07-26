@@ -4,8 +4,8 @@
 #include "io/IO.h"
 #include "materials/Lambertian.h"
 
-constexpr int IMAGE_WIDTH = 360;
-constexpr int IMAGE_HEIGHT = 180;
+constexpr int IMAGE_WIDTH = 640;
+constexpr int IMAGE_HEIGHT = 360;
 constexpr const char *INPUT_FILE_PATH = "./assets/cube.obj";
 constexpr IO::FileFormat INPUT_FILE_FORMAT = IO::FileFormat::OBJ;
 constexpr const char *OUTPUT_FILE_PATH = "./cube-output-01.png";

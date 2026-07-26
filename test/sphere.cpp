@@ -5,8 +5,8 @@
 #include "materials/Metal.h"
 #include "materials/Lambertian.h"
 
-constexpr int IMAGE_WIDTH = 360;
-constexpr int IMAGE_HEIGHT = 180;
+constexpr int IMAGE_WIDTH = 640;
+constexpr int IMAGE_HEIGHT = 360;
 constexpr const char *OUTPUT_FILE_PATH = "sphere-output-01.png";
 constexpr IO::FileFormat OUTPUT_FILE_FORMAT = IO::FileFormat::PNG;
 
