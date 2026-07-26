@@ -1,7 +1,7 @@
 #include <cmath>
 
-#include "geometry/Vector.h"
 #include "utils/math.h"
+#include "geometry/Vector.h"
 
 Vec2 Vec2::getRandomUnitSquare() { return {getRandomFLoat(), getRandomFLoat()}; }
 
@@ -138,6 +138,8 @@ Vec3 Vec3::getRandomUnitSphere() {
 
 float Vec3::length() const { return std::sqrt(length2()); }
 float Vec3::length2() const { return x * x + y * y + z * z; }
+Vec3 Vec3::reflect(const Vec3 &n) const { return *this - 2 * dot(*this, n) * n; }
+
 float dot(const Vec3 &v1, const Vec3 &v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; }
 
 Vec3 cross(const Vec3 &v1, const Vec3 &v2) {

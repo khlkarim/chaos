@@ -5,9 +5,9 @@
 struct Vec2 {
   float x = 0, y = 0;
 
-  Vec2() = default;
-  Vec2(float a) : x(a), y(a) {}
-  Vec2(float x, float y) : x(x), y(y) {}
+  constexpr Vec2() = default;
+  constexpr Vec2(float a) : x(a), y(a) {}
+  constexpr Vec2(float x, float y) : x(x), y(y) {}
 
   static Vec2 getRandomUnitSquare();
   static Vec2 getRandomUnitCircle();
@@ -43,15 +43,17 @@ struct Vec2 {
 struct Vec3 {
   float x = 0, y = 0, z = 0;
 
-  Vec3() = default;
-  Vec3(float a) : x(a), y(a), z(a) {}
-  Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
+  constexpr Vec3() = default;
+  constexpr Vec3(float a) : x(a), y(a), z(a) {}
+  constexpr Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
 
   static Vec3 getRandomUnitCube();
   static Vec3 getRandomUnitSphere();
 
   float length() const;
   float length2() const;
+  Vec3 reflect(const Vec3 &n) const;
+
   friend Vec3 normalize(const Vec3 &v);
   friend float dot(const Vec3 &v1, const Vec3 &v2);
   friend Vec3 cross(const Vec3 &v1, const Vec3 &v2);
@@ -82,9 +84,9 @@ struct Vec3 {
 struct Vec4 {
   float x = 0, y = 0, z = 0, w = 0;
 
-  Vec4() = default;
-  Vec4(float a) : x(a), y(a), z(a), w(a) {}
-  Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+  constexpr Vec4() = default;
+  constexpr Vec4(float a) : x(a), y(a), z(a), w(a) {}
+  constexpr Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
 
   float length() const;
   float length2() const;
@@ -115,3 +117,9 @@ struct Vec4 {
 };
 
 using Color = Vec4;
+constexpr Color COLOR_BLACK = Color(0, 0, 0, 1);
+constexpr Color COLOR_GREY = Color(0.5, 0.5, 0.5, 1);
+constexpr Color COLOR_WHITE = Color(1, 1, 1, 1);
+constexpr Color COLOR_RED = Color(1, 0, 0, 1);
+constexpr Color COLOR_GREEN = Color(0, 1, 0, 1);
+constexpr Color COLOR_BLUE = Color(0, 0, 1, 1);
