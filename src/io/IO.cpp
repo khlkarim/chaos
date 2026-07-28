@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 
+#include "renderer/Renderer.h"
 #include "utils/stb_image_write.h"
 
 #include "io/CRT.h"
@@ -33,6 +34,18 @@ void IO::save(const Renderer &renderer, const std::string &path, FileFormat form
   }
 }
 
+void IO::load(Renderer &renderer, const std::string &path, FileFormat format) {
+  std::cout << "Loading renderer from: " << path << std::endl;
+
+  switch (format) {
+  case CRT:
+    CRT::load(renderer, path);
+    break;
+  default:
+    std::cout << "Unsupported format." << std::endl;
+  }
+}
+
 void IO::load(Scene &scene, const std::string &path, FileFormat format) {
   std::cout << "Loading scene from: " << path << std::endl;
 
@@ -51,6 +64,9 @@ void IO::load(Mesh &mesh, const std::string &path, FileFormat format) {
   switch (format) {
   case OBJ:
     OBJ::load(mesh, path);
+    break;
+  case CRT:
+    CRT::load(mesh, path);
     break;
   default:
     std::cout << "Unsupported format." << std::endl;
