@@ -4,19 +4,21 @@
 #include "utils/math.h"
 #include "renderer/Renderer.h"
 
-Renderer::Renderer(const int w, const int h) {
+Renderer::Renderer(int w, int h) {
   width = w;
   aspectRatio = (float)w / h;
   pixels = std::vector<unsigned int>(h * w, 0xffu << 24);
 }
 
-int Renderer::getHeight() const {
-  int height = width / aspectRatio;
-  return std::max(1, height);
+void Renderer::setDimensions(int w, int h) {
+  width = w;
+  aspectRatio = (float)w / h;
+  pixels.resize(h * w, 0xffu << 24);
 }
 
 int Renderer::getWidth() const { return width; }
 float Renderer::getAspectRatio() const { return aspectRatio; }
+int Renderer::getHeight() const { return std::max(1, static_cast<int>(width / aspectRatio)); }
 
 int Renderer::getMaxDepth() const { return maxDepth; }
 void Renderer::setMaxDepth(int depth) { maxDepth = depth; }
@@ -98,7 +100,7 @@ void Renderer::render(Scene &scene) {
   std::cout << std::endl;
 }
 
-void Renderer::setColor(const int &row, const int &col, const Color &color) {
+void Renderer::setColor(int row, int col, Color color) {
   int height = getHeight();
   if (row < 0 || row >= height || col < 0 || col >= width) {
     return;

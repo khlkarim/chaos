@@ -13,6 +13,8 @@ public:
   Vec3 getDirection() const;
   void setDirection(Vec3 d);
 
+  Vec3 at(float t) const;
+
 private:
   Vec3 origin;
   Vec3 direction;

@@ -17,6 +17,8 @@ public:
   Vec3 getScale() const;
   void setScale(Vec3 s);
 
+  Vec3 apply(Vec3 v) const;
+
 private:
   Vec3 position = Vec3(0);
   Vec3 scale = Vec3(1);

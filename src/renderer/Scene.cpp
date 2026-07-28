@@ -1,7 +1,5 @@
 #include <memory>
 
-#include "utils/math.h"
-
 #include "components/SDF.h"
 #include "components/Mesh.h"
 #include "components/Material.h"
@@ -33,14 +31,11 @@ Color Scene::getColor(const Ray &ray, int depth) {
     auto mat = em.get<Material>(inter.eId);
     auto reflected = mat->reflect(ray, inter);
     return mat->mix(getColor(reflected, depth - 1));
-
-  } else {
-    if (skybox != nullptr) {
-      return skybox->getColor(ray);
-    }
-
-    return COLOR_WHITE;
+  } else if (skybox != nullptr) {
+    return skybox->getColor(ray);
   }
+
+  return COLOR_WHITE;
 }
 
 Intersection Scene::intersect(const Ray &ray) {
@@ -74,7 +69,6 @@ Intersection Scene::intersect(const Ray &ray) {
     if (currInter.t > 0 && (inter.t == -1 || currInter.t < inter.t)) {
       inter = currInter;
       inter.eId = curr;
-      inter.p = ray.getOrigin() + (inter.t - EPSILON) * ray.getDirection();
     }
   }
 

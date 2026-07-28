@@ -1,5 +1,5 @@
-#include "components/Mesh.h"
 #include "utils/math.h"
+#include "components/Mesh.h"
 
 Component::Type Mesh::getType() const { return TYPE; }
 
@@ -12,71 +12,54 @@ const std::vector<unsigned int> &Mesh::getIndices() const { return indices; }
 void Mesh::setIndices(const std::vector<unsigned int> &i) { indices = i; }
 
 Intersection Mesh::intersect(const Ray &ray, const Transform &transform) const {
-  int closestIdx = -1;
-  float closestT = -1;
+  Intersection inter, currInter;
 
   for (int i = 0; i < indices.size(); i += 3) {
     std::vector<Vertex> tri(3);
+    std::vector<Vec3> edges(3);
 
     for (int j = 0; j < 3; j++) {
       tri[j] = vertices[indices[i + j]];
-      tri[j].position = tri[j].position * transform.getScale() + transform.getPosition();
+      tri[j].position = transform.apply(tri[j].position);
+    }
+    for (int j = 0; j < 3; j++) {
+      edges[j] = tri[(j + 1) % 3].position - tri[j].position;
     }
 
-    Vec3 normal = cross(tri[1].position - tri[0].position, tri[2].position - tri[0].position);
-    float distance = -dot(tri[0].position, normal);
+    currInter.normal = normalize(cross(edges[0], -edges[2]));
+    float distance = -dot(tri[0].position, currInter.normal);
     Vec3 rayDir = ray.getDirection(), rayOrig = ray.getOrigin();
 
-    if (std::abs(dot(rayDir, normal)) < EPSILON) {
+    if (std::abs(dot(rayDir, currInter.normal)) < EPSILON) {
       continue;
     }
 
-    float t = -(dot(normal, rayOrig) + distance) / dot(normal, rayDir);
-    if (t < 0) {
+    currInter.t = -(dot(currInter.normal, rayOrig) + distance) / dot(currInter.normal, rayDir);
+    if (currInter.t < 0) {
       continue;
     }
 
-    Vec3 n, p = rayOrig + t * rayDir;
-    Vec3 v0v1 = tri[1].position - tri[0].position;
-    Vec3 v0v2 = tri[2].position - tri[0].position;
-
-    if (dot(cross(v0v1, v0v2), normal) < 0) {
-      Vertex tmp = tri[1];
-      tri[1] = tri[2];
-      tri[2] = tmp;
-
-      Vec3 t = v0v1;
-      v0v1 = v0v2;
-      v0v2 = t;
+    bool inside = true;
+    Vec3 n, p = ray.at(currInter.t);
+    for (int j = 0; j < 3 && inside; j++) {
+      n = normalize(cross(edges[j], p - tri[j].position));
+      if (dot(n, currInter.normal) < 0) {
+        inside = false;
+      }
     }
 
-    Vec3 v0p = p - tri[0].position;
-    n = cross(v0v1, v0p);
-    if (dot(normal, n) < 0)
+    if (!inside) {
       continue;
+    }
 
-    Vec3 v2v1 = tri[2].position - tri[1].position;
-    Vec3 v1p = p - tri[1].position;
-    n = cross(v2v1, v1p);
-    if (dot(normal, n) < 0)
-      continue;
-
-    Vec3 v2v0 = tri[0].position - tri[2].position;
-    Vec3 v2p = p - tri[2].position;
-    n = cross(v2v0, v2p);
-    if (dot(normal, n) < 0)
-      continue;
-
-    if (closestIdx == -1 || t < closestT) {
-      closestT = t;
-      closestIdx = i;
+    if (inter.t == -1 || (currInter.t > 0 && currInter.t < inter.t)) {
+      inter = currInter;
     }
   }
 
-  Intersection inter;
-  if (closestIdx != -1) {
-    inter.t = closestT;
-    inter.normal = vertices[indices[closestIdx]].normal;
+  if (inter.t > 0 && dot(inter.normal, ray.getDirection()) > 0) {
+    inter.normal *= -1;
+    inter.isFrontFace = false;
   }
 
   return inter;
