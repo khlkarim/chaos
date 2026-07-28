@@ -8,6 +8,7 @@ set(TESTS
   ray
   crt
   cube
+  chaos
   model
   entity
   sphere
@@ -24,6 +25,7 @@ set(SOURCES
   ./src/components/Material.cpp
   ./src/components/SDF.cpp
 
+  ./src/materials/Dielectric.cpp
   ./src/materials/Lambertian.cpp
   ./src/materials/Metal.cpp
 

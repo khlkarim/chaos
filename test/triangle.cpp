@@ -2,18 +2,17 @@
 
 #include "io/IO.h"
 #include "components/Mesh.h"
-#include "geometry/Vector.h"
 #include "renderer/Renderer.h"
 #include "materials/Lambertian.h"
 
-constexpr int IMAGE_WIDTH = 640;
-constexpr int IMAGE_HEIGHT = 360;
+constexpr int IMAGE_WIDTH = 320;
+constexpr int IMAGE_HEIGHT = 180;
 constexpr const char *OUTPUT_FILE_PATH = "triangle-output-01.png";
 constexpr IO::FileFormat OUTPUT_FILE_FORMAT = IO::FileFormat::PNG;
 
 void init(Scene &scene);
 void init(Camera &camera);
-EntityId createTriangle(EntityManager &em);
+EntityId drawTriangle(EntityManager &em, std::shared_ptr<Transform> transform, std::shared_ptr<Material> mat);
 
 int main() {
   Scene scene;
@@ -26,11 +25,13 @@ int main() {
 }
 
 void init(Scene &scene) {
-  Camera &camera = scene.getCamera();
-  EntityManager &em = scene.getEntityManager();
-
+  auto &camera = scene.getCamera();
+  auto &em = scene.getEntityManager();
   init(camera);
-  createTriangle(em);
+
+  auto mat = std::make_shared<Lambertian>(COLOR_GREY);
+  auto transform = std::make_shared<Transform>(Vec3(0, 0, -1));
+  drawTriangle(em, transform, mat);
 }
 
 void init(Camera &camera) {
@@ -39,7 +40,7 @@ void init(Camera &camera) {
   camera.setPosition(Vec3(-1, 1, 1));
 }
 
-EntityId createTriangle(EntityManager &em) {
+EntityId drawTriangle(EntityManager &em, std::shared_ptr<Transform> transform, std::shared_ptr<Material> mat) {
   auto triangle = em.createEntity();
 
   std::vector<unsigned int> indices = {0, 1, 2};
@@ -59,8 +60,6 @@ EntityId createTriangle(EntityManager &em) {
       },
   };
 
-  auto mat = std::make_shared<Lambertian>(COLOR_GREY);
-  auto transform = std::make_shared<Transform>(Vec3(0, 0, -1));
   auto mesh = std::make_shared<Mesh>(vertices, indices);
   em.setAll(triangle, {mat, mesh, transform});
 

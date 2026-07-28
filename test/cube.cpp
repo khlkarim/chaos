@@ -4,16 +4,16 @@
 #include "io/IO.h"
 #include "materials/Lambertian.h"
 
-constexpr int IMAGE_WIDTH = 640;
-constexpr int IMAGE_HEIGHT = 360;
-constexpr const char *INPUT_FILE_PATH = "./assets/cube.obj";
-constexpr IO::FileFormat INPUT_FILE_FORMAT = IO::FileFormat::OBJ;
+constexpr int IMAGE_WIDTH = 320;
+constexpr int IMAGE_HEIGHT = 180;
+constexpr const char *CUBE_FILE_PATH = "./assets/cube.obj";
+constexpr IO::FileFormat CUBE_FILE_FORMAT = IO::FileFormat::OBJ;
 constexpr const char *OUTPUT_FILE_PATH = "./cube-output-01.png";
 constexpr IO::FileFormat OUTPUT_FILE_FORMAT = IO::FileFormat::PNG;
 
 void init(Scene &scene);
 void init(Camera &camera);
-EntityId loadModel(EntityManager &em, const std::string &path);
+EntityId drawCube(EntityManager &em, std::shared_ptr<Transform> transform, std::shared_ptr<Material> material);
 
 int main() {
   Scene scene;
@@ -26,11 +26,13 @@ int main() {
 }
 
 void init(Scene &scene) {
-  Camera &camera = scene.getCamera();
-  EntityManager &em = scene.getEntityManager();
-
+  auto &camera = scene.getCamera();
+  auto &em = scene.getEntityManager();
   init(camera);
-  loadModel(em, INPUT_FILE_PATH);
+
+  auto material = std::make_shared<Lambertian>(COLOR_GREY);
+  auto transform = std::make_shared<Transform>(Vec3(-0.5, -0.5, -0.5));
+  drawCube(em, transform, material);
 }
 
 void init(Camera &camera) {
@@ -38,14 +40,11 @@ void init(Camera &camera) {
   camera.setPosition(Vec3(0, 1, 2));
 }
 
-EntityId loadModel(EntityManager &em, const std::string &path) {
+EntityId drawCube(EntityManager &em, std::shared_ptr<Transform> transform, std::shared_ptr<Material> material) {
   auto model = em.createEntity();
 
-  auto material = std::make_shared<Lambertian>(COLOR_GREY);
   auto mesh = std::make_shared<Mesh>();
-  auto transform = std::make_shared<Transform>(Vec3(-0.5, -0.5, -0.5));
-
-  IO::load(*mesh, INPUT_FILE_PATH, IO::FileFormat::OBJ);
+  IO::load(*mesh, CUBE_FILE_PATH, CUBE_FILE_FORMAT);
   em.setAll(model, {mesh, material, transform});
 
   return model;

@@ -48,8 +48,8 @@ int main() {
 }
 
 void init(Scene &scene) {
-  Camera &camera = scene.getCamera();
-  EntityManager &em = scene.getEntityManager();
+  auto &camera = scene.getCamera();
+  auto &em = scene.getEntityManager();
 
   init(camera);
   loadModel(em, INPUT_FILE_PATH);
@@ -61,7 +61,7 @@ void init(Camera &camera) {
 }
 
 void update(Scene &scene, float t) {
-  Camera &camera = scene.getCamera();
+  auto &camera = scene.getCamera();
   update(camera, t);
 }
 
