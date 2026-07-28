@@ -17,6 +17,9 @@ struct Vec2 {
   friend Vec2 normalize(const Vec2 &v);
   friend float dot(const Vec2 &v1, const Vec2 &v2);
 
+  Vec2 operator+() const;
+  Vec2 operator-() const;
+
   Vec2 &operator+=(const Vec2 &v);
   Vec2 &operator-=(const Vec2 &v);
   Vec2 &operator*=(const Vec2 &v);
@@ -53,10 +56,14 @@ struct Vec3 {
   float length() const;
   float length2() const;
   Vec3 reflect(const Vec3 &n) const;
+  Vec3 refract(const Vec3 &n, float ri) const;
 
   friend Vec3 normalize(const Vec3 &v);
   friend float dot(const Vec3 &v1, const Vec3 &v2);
   friend Vec3 cross(const Vec3 &v1, const Vec3 &v2);
+
+  Vec3 operator+() const;
+  Vec3 operator-() const;
 
   Vec3 &operator+=(const Vec3 &v);
   Vec3 &operator-=(const Vec3 &v);
@@ -88,10 +95,15 @@ struct Vec4 {
   constexpr Vec4(float a) : x(a), y(a), z(a), w(a) {}
   constexpr Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
 
+  static Vec4 getRandom();
+
   float length() const;
   float length2() const;
   friend Vec4 normalize(const Vec4 &v);
   friend float dot(const Vec4 &v1, const Vec4 &v2);
+
+  Vec4 operator+() const;
+  Vec4 operator-() const;
 
   Vec4 &operator+=(const Vec4 &v);
   Vec4 &operator-=(const Vec4 &v);

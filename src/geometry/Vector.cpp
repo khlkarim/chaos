@@ -19,6 +19,9 @@ Vec2 normalize(const Vec2 &v) {
   return u;
 }
 
+Vec2 Vec2::operator+() const { return {x, y}; }
+Vec2 Vec2::operator-() const { return {-x, -y}; }
+
 Vec2 &Vec2::operator+=(const Vec2 &v) {
   this->x += v.x;
   this->y += v.y;
@@ -140,6 +143,16 @@ float Vec3::length() const { return std::sqrt(length2()); }
 float Vec3::length2() const { return x * x + y * y + z * z; }
 Vec3 Vec3::reflect(const Vec3 &n) const { return *this - 2 * dot(*this, n) * n; }
 
+Vec3 Vec3::refract(const Vec3 &n, float ri) const {
+  float d = dot(-(*this), n);
+  d = std::fmin(d, 1);
+
+  Vec3 a = ri * (*this + d * n);
+  Vec3 b = -std::sqrt(std::fabs(1 - a.length2())) * n;
+
+  return a + b;
+}
+
 float dot(const Vec3 &v1, const Vec3 &v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; }
 
 Vec3 cross(const Vec3 &v1, const Vec3 &v2) {
@@ -154,6 +167,9 @@ Vec3 normalize(const Vec3 &v) {
   Vec3 u = v / v.length();
   return u;
 }
+
+Vec3 Vec3::operator+() const { return {x, y, z}; }
+Vec3 Vec3::operator-() const { return {-x, -y, -z}; }
 
 Vec3 &Vec3::operator+=(const Vec3 &v) {
   this->x += v.x;
@@ -280,6 +296,8 @@ std::ostream &operator<<(std::ostream &os, const Vec3 &v) {
   return os;
 }
 
+Vec4 Vec4::getRandom() { return Vec4(getRandomFLoat(), getRandomFLoat(), getRandomFLoat(), getRandomFLoat()); }
+
 float Vec4::length() const { return std::sqrt(length2()); }
 float Vec4::length2() const { return x * x + y * y + z * z + w * w; }
 float dot(const Vec4 &v1, const Vec4 &v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z + v1.w * v2.w; }
@@ -288,6 +306,9 @@ Vec4 normalize(const Vec4 &v) {
   Vec4 u = v / v.length();
   return u;
 }
+
+Vec4 Vec4::operator+() const { return {x, y, z, w}; }
+Vec4 Vec4::operator-() const { return {-x, -y, -z, -w}; }
 
 Vec4 &Vec4::operator+=(const Vec4 &v) {
   this->x += v.x;
