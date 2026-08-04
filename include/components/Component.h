@@ -5,10 +5,10 @@ public:
   enum Type {
     METADATA,
 
-    SDF,
-    MESH,
-    MATERIAL,
+    HIERARCHY,
     TRANSFORM,
+    GEOMETRY,
+    MATERIAL,
 
     TYPE_COUNT,
   };

@@ -1,6 +1,4 @@
-#include <vector>
-
-#include "entity/Entity.h"
+#include "components/Hierarchy.h"
 
 EntityManager::EntityManager() { used = std::vector<bool>(MAX_ENTITIES + 1, false); }
 
@@ -18,6 +16,17 @@ EntityId EntityManager::createEntity() {
 void EntityManager::removeEntity(EntityId eId) {
   if (eId <= NIL || eId > MAX_ENTITIES || !used[eId]) {
     return;
+  }
+
+  EntityId curr = NIL;
+  auto iter = createIterator();
+
+  while (iter.hasNext()) {
+    curr = iter.next();
+    if (has<Hierarchy>(curr)) {
+      auto hierarchy = get<Hierarchy>(curr);
+      hierarchy->remove(eId);
+    }
   }
 
   for (int i = 0; i < Component::Type::TYPE_COUNT; i++) {

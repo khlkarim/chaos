@@ -8,7 +8,6 @@
 
 #include "skybox/Sky.h"
 #include "entity/Entity.h"
-#include "geometry/Mesh.h"
 #include "materials/Lambertian.h"
 
 #include "io/CRT.h"
