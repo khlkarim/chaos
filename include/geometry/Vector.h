@@ -14,6 +14,8 @@ struct Vec2 {
 
   float length() const;
   float length2() const;
+  Vec2 rotate(float theta) const;
+
   friend Vec2 normalize(const Vec2 &v);
   friend float dot(const Vec2 &v1, const Vec2 &v2);
 
@@ -57,6 +59,7 @@ struct Vec3 {
   float length2() const;
   Vec3 reflect(const Vec3 &n) const;
   Vec3 refract(const Vec3 &n, float ri) const;
+  Vec3 rotate(const Vec3 &rotation) const;
 
   friend Vec3 normalize(const Vec3 &v);
   friend float dot(const Vec3 &v1, const Vec3 &v2);
@@ -129,9 +132,15 @@ struct Vec4 {
 };
 
 using Color = Vec4;
+
+constexpr Vec3 XAXIS = Vec3(1, 0, 0);
+constexpr Vec3 YAXIS = Vec3(0, 1, 0);
+constexpr Vec3 ZAXIS = Vec3(0, 0, 1);
+
 constexpr Color COLOR_BLACK = Color(0, 0, 0, 1);
 constexpr Color COLOR_GREY = Color(0.5, 0.5, 0.5, 1);
 constexpr Color COLOR_WHITE = Color(1, 1, 1, 1);
 constexpr Color COLOR_RED = Color(1, 0, 0, 1);
 constexpr Color COLOR_GREEN = Color(0, 1, 0, 1);
 constexpr Color COLOR_BLUE = Color(0, 0, 1, 1);
+constexpr Color COLOR_MAGENTA = Color(1, 0, 1, 1);

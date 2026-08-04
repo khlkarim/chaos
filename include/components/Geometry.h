@@ -4,9 +4,9 @@
 #include "components/Transform.h"
 #include "geometry/Intersection.h"
 
-class SDF : public Component {
+class Geometry : public Component {
 public:
-  static const Component::Type TYPE = Component::Type::SDF;
+  static const Component::Type TYPE = Component::Type::GEOMETRY;
   Type getType() const override;
 
   virtual Intersection intersect(const Ray &ray, const Transform &transform = Transform()) const = 0;

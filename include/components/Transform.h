@@ -14,12 +14,16 @@ public:
   Vec3 getPosition() const;
   void setPosition(Vec3 p);
 
+  Vec3 getRotation() const;
+  void setRotation(Vec3 r);
+
   Vec3 getScale() const;
   void setScale(Vec3 s);
 
   Vec3 apply(Vec3 v) const;
 
 private:
-  Vec3 position = Vec3(0);
+  Vec3 position;
+  Vec3 rotation;
   Vec3 scale = Vec3(1);
 };

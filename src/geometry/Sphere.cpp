@@ -1,5 +1,6 @@
 #include <cmath>
 
+#include "utils/math.h"
 #include "geometry/Sphere.h"
 
 float Sphere::getRadius() const { return radius; }
@@ -25,8 +26,10 @@ Intersection Sphere::intersect(const Ray &ray, const Transform &transform) const
     } else {
       inter.t = (-b + std::sqrt(discriminant)) / (2.0 * a);
     }
+
     Vec3 pos = ray.at(inter.t);
     inter.normal = normalize(pos - center);
+    inter.texCoords = getTexCoords(inter.normal);
 
     if (dot(inter.normal, dir) > 0) {
       inter.normal *= -1;
@@ -35,4 +38,14 @@ Intersection Sphere::intersect(const Ray &ray, const Transform &transform) const
   }
 
   return inter;
+}
+
+Vec2 Sphere::getTexCoords(Vec3 n) {
+  float phi = std::acos(n.y);
+  float theta = std::atan2(-n.z, n.x) + PI;
+
+  float u = theta / (2 * PI);
+  float v = phi / PI;
+
+  return Vec2(u, v);
 }

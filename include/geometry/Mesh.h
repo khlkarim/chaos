@@ -2,19 +2,13 @@
 
 #include <vector>
 
-#include "geometry/Ray.h"
 #include "geometry/Vertex.h"
-#include "components/Transform.h"
-#include "geometry/Intersection.h"
+#include "components/Geometry.h"
 
-class Mesh : public Component {
+class Mesh : public Geometry {
 public:
-  static const Component::Type TYPE = Component::Type::MESH;
-  Type getType() const override;
-
   Mesh() = default;
-  Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices)
-      : vertices(vertices), indices(indices) {}
+  Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices);
 
   std::vector<Vertex> &getVertices();
   const std::vector<Vertex> &getVertices() const;
@@ -24,9 +18,13 @@ public:
   const std::vector<unsigned int> &getIndices() const;
   void setIndices(const std::vector<unsigned int> &i);
 
-  Intersection intersect(const Ray &ray, const Transform &transform = Transform()) const;
+  Intersection intersect(const Ray &ray, const Transform &transform = Transform()) const override;
 
-private:
+  static void computeNormals(std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices);
+
+protected:
+  static Vec3 getBarycentricCoords(const std::vector<Vertex> &tri, Vec3 p);
+
   std::vector<Vertex> vertices;
   std::vector<unsigned int> indices;
 };
