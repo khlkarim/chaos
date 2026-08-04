@@ -1,6 +1,6 @@
 #pragma once
 
-#include "components/Mesh.h"
+#include "geometry/Mesh.h"
 
 class OBJ {
 public:

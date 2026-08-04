@@ -2,7 +2,7 @@
 #include <vector>
 #include <iostream>
 
-#include "renderer/Renderer.h"
+#include "utils/stb_image.h"
 #include "utils/stb_image_write.h"
 
 #include "io/CRT.h"
@@ -71,4 +71,17 @@ void IO::load(Mesh &mesh, const std::string &path, FileFormat format) {
   default:
     std::cout << "Unsupported format." << std::endl;
   }
+}
+
+void IO::load(Image &image, const std::string &path, FileFormat format) {
+  std::cout << "Loading image from: " << path << std::endl;
+
+  int w = 0, h = 0, c = 0;
+  float *d = stbi_loadf(path.c_str(), &w, &h, &c, 0);
+  int size = w * h * c;
+
+  image.setWidth(w);
+  image.setHeight(h);
+  image.setChannels(c);
+  image.setData(std::vector<float>(d, d + size));
 }

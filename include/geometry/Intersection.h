@@ -4,8 +4,9 @@
 #include "geometry/Vector.h"
 
 struct Intersection {
-  Vec3 normal;
   float t = -1;
+  Vec3 normal;
+  Vec2 texCoords;
   bool isFrontFace = true;
   EntityId eId = EntityManager::NIL;
 };

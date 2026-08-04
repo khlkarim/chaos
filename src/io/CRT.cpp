@@ -8,7 +8,7 @@
 
 #include "skybox/Sky.h"
 #include "entity/Entity.h"
-#include "components/Mesh.h"
+#include "geometry/Mesh.h"
 #include "materials/Lambertian.h"
 
 #include "io/CRT.h"
@@ -185,16 +185,6 @@ CRT::Schema CRT::parse(const std::string &path) {
         meshVertices.push_back(v);
       }
       std::cout << std::endl;
-
-      for (int j = 0; j < meshIndices.size(); j += 3) {
-        Vec3 a = meshVertices[meshIndices[j + 1]].position - meshVertices[meshIndices[j]].position;
-        Vec3 b = meshVertices[meshIndices[j + 2]].position - meshVertices[meshIndices[j]].position;
-
-        Vec3 n = cross(a, b);
-        meshVertices[meshIndices[j]].normal = n;
-        meshVertices[meshIndices[j + 1]].normal = n;
-        meshVertices[meshIndices[j + 2]].normal = n;
-      }
 
       schema.objects.push_back(Mesh(meshVertices, meshIndices));
     }

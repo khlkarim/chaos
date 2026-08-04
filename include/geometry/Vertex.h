@@ -6,5 +6,5 @@ struct Vertex {
   Color color;
   Vec3 normal;
   Vec3 position;
-  Vec2 textureCoords;
+  Vec2 texCoords;
 };

@@ -12,6 +12,13 @@ Vec2 Vec2::getRandomUnitCircle() {
 
 float Vec2::length() const { return std::sqrt(length2()); }
 float Vec2::length2() const { return x * x + y * y; }
+
+Vec2 Vec2::rotate(float theta) const {
+  float c = std::cos(theta);
+  float s = std::sin(theta);
+  return {c * x - s * y, s * x + c * y};
+}
+
 float dot(const Vec2 &v1, const Vec2 &v2) { return v1.x * v2.x + v1.y * v2.y; }
 
 Vec2 normalize(const Vec2 &v) {
@@ -141,6 +148,7 @@ Vec3 Vec3::getRandomUnitSphere() {
 
 float Vec3::length() const { return std::sqrt(length2()); }
 float Vec3::length2() const { return x * x + y * y + z * z; }
+
 Vec3 Vec3::reflect(const Vec3 &n) const { return *this - 2 * dot(*this, n) * n; }
 
 Vec3 Vec3::refract(const Vec3 &n, float ri) const {
@@ -151,6 +159,24 @@ Vec3 Vec3::refract(const Vec3 &n, float ri) const {
   Vec3 b = -std::sqrt(std::fabs(1 - a.length2())) * n;
 
   return a + b;
+}
+
+Vec3 Vec3::rotate(const Vec3 &rotation) const {
+  Vec3 v = *this;
+
+  Vec2 yz(v.y, v.z);
+  yz = yz.rotate(rotation.x);
+  v = {v.x, yz.x, yz.y};
+
+  Vec2 xz(v.x, v.z);
+  xz = xz.rotate(rotation.y);
+  v = {xz.x, v.y, xz.y};
+
+  Vec2 xy(v.x, v.y);
+  xy = xy.rotate(rotation.z);
+  v = {xy.x, xy.y, v.z};
+
+  return v;
 }
 
 float dot(const Vec3 &v1, const Vec3 &v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; }

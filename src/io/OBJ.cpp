@@ -61,7 +61,7 @@ void OBJ::load(Mesh &mesh, const std::string &path) {
           idx = nbSlash == 1 || (nbSlash == 2 && c.size() == 3) ? std::stoi(c[1]) : 0;
           if (idx != 0) {
             idx = idx > 0 ? idx - 1 : vt.size() + idx;
-            vertex.textureCoords = {vt[idx][0], vt[idx][1]};
+            vertex.texCoords = {vt[idx][0], vt[idx][1]};
           }
 
           idx = nbSlash == 2 ? std::stoi(c[c.size() - 1]) : 0;
@@ -86,5 +86,6 @@ void OBJ::load(Mesh &mesh, const std::string &path) {
     }
   }
 
+  Mesh::computeNormals(vertices, indices);
   f.close();
 }

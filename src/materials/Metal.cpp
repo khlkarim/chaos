@@ -4,16 +4,17 @@
 float Metal::getFuzz() const { return fuzz; }
 void Metal::setFuzz(float f) { fuzz = f; }
 
-Color Metal::getAlbedo() const { return albedo; }
-void Metal::setAlbedo(Color c) { albedo = c; }
+std::shared_ptr<Texture> Metal::getTexture() { return texture; }
+void Metal::setTexture(std::shared_ptr<Texture> tex) { texture = tex; }
 
-Color Metal::mix(const Color &color) const { return color * albedo; }
-
-Ray Metal::reflect(const Ray &ray, const Intersection &inter) const {
-  Ray reflected;
+bool Metal::scatter(const Ray &ray, const Intersection &inter, Ray &scattered) const {
   Vec3 dir = ray.getDirection();
   Vec3 rand = Vec3::getRandomUnitSphere();
-  reflected.setOrigin(ray.at(inter.t - EPSILON));
-  reflected.setDirection(normalize(dir.reflect(inter.normal) + fuzz * rand));
-  return reflected;
+  scattered.setOrigin(ray.at(inter.t - EPSILON));
+  scattered.setDirection(normalize(dir.reflect(inter.normal) + fuzz * rand));
+  return true;
+}
+
+Color Metal::emit(Scene &scene, const Ray &ray, const Intersection &inter, const Color &scattered) const {
+  return scattered * texture->at(inter.texCoords);
 }

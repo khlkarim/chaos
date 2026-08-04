@@ -1,21 +1,23 @@
 #pragma once
 
+#include "textures/SolidColor.h"
 #include "components/Material.h"
 
 class Metal : public Material {
 public:
-  Metal(Color albedo = Color(1), float fuzz = 0) : albedo(albedo), fuzz(fuzz) {}
+  Metal(Color albedo = COLOR_WHITE, float f = 0) : texture(std::make_shared<SolidColor>(albedo)), fuzz(f) {}
+  Metal(std::shared_ptr<Texture> texture, float f = 0) : texture(texture), fuzz(f) {}
 
   float getFuzz() const;
   void setFuzz(float f);
 
-  Color getAlbedo() const;
-  void setAlbedo(Color c);
+  std::shared_ptr<Texture> getTexture();
+  void setTexture(std::shared_ptr<Texture> tex);
 
-  Color mix(const Color &color) const override;
-  Ray reflect(const Ray &ray, const Intersection &inter) const override;
+  bool scatter(const Ray &ray, const Intersection &inter, Ray &scattered) const override;
+  Color emit(Scene &scene, const Ray &ray, const Intersection &inter, const Color &scattered) const override;
 
 private:
   float fuzz;
-  Color albedo;
+  std::shared_ptr<Texture> texture;
 };

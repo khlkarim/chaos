@@ -1,7 +1,7 @@
 #pragma once
 
+#include "geometry/Mesh.h"
 #include "renderer/Scene.h"
-#include "components/Mesh.h"
 #include "renderer/Renderer.h"
 
 class CRT {

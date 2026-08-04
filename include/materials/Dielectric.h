@@ -9,8 +9,8 @@ public:
   float getRefractiveIndex() const;
   void setRefractiveIndex(float n);
 
-  Color mix(const Color &color) const override;
-  Ray reflect(const Ray &ray, const Intersection &inter) const override;
+  bool scatter(const Ray &ray, const Intersection &inter, Ray &scattered) const override;
+  Color emit(Scene &scene, const Ray &ray, const Intersection &inter, const Color &scattered) const override;
 
 private:
   float getReflectance(float a) const;

@@ -6,11 +6,7 @@
 float Dielectric::getRefractiveIndex() const { return refractiveIndex; }
 void Dielectric::setRefractiveIndex(float n) { refractiveIndex = n; }
 
-Color Dielectric::mix(const Color &color) const { return color; }
-
-Ray Dielectric::reflect(const Ray &ray, const Intersection &inter) const {
-  Ray reflected;
-
+bool Dielectric::scatter(const Ray &ray, const Intersection &inter, Ray &scattered) const {
   Vec3 dir = normalize(ray.getDirection());
   float ri = inter.isFrontFace ? 1 / refractiveIndex : refractiveIndex;
 
@@ -18,14 +14,18 @@ Ray Dielectric::reflect(const Ray &ray, const Intersection &inter) const {
   float b = std::sqrt(1 - a * a);
 
   if (ri * b > 1.0 || getReflectance(a) > getRandomFLoat()) {
-    reflected.setOrigin(ray.at(inter.t - EPSILON));
-    reflected.setDirection(dir.reflect(inter.normal));
+    scattered.setOrigin(ray.at(inter.t - EPSILON));
+    scattered.setDirection(dir.reflect(inter.normal));
   } else {
-    reflected.setOrigin(ray.at(inter.t + EPSILON));
-    reflected.setDirection(dir.refract(inter.normal, ri));
+    scattered.setOrigin(ray.at(inter.t + EPSILON));
+    scattered.setDirection(dir.refract(inter.normal, ri));
   }
 
-  return reflected;
+  return true;
+}
+
+Color Dielectric::emit(Scene &scene, const Ray &ray, const Intersection &inter, const Color &scattered) const {
+  return scattered;
 }
 
 float Dielectric::getReflectance(float a) const {
