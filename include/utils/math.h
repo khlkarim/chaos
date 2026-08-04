@@ -9,3 +9,4 @@ float toRadians(float degrees);
 float toDegrees(float radians);
 float gammaToLinear(float a);
 float linearToGamma(float a);
+float clamp(float x, float min, float max);

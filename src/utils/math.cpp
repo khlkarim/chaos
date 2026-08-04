@@ -10,3 +10,5 @@ float toDegrees(float radians) { return radians * 180.f / PI; }
 
 float gammaToLinear(float a) { return a * a; }
 float linearToGamma(float a) { return a > 0 ? std::sqrt(a) : 0; }
+
+float clamp(float x, float min, float max) { return x < min ? min : x > max ? max : x; }

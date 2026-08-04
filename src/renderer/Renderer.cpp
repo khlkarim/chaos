@@ -106,10 +106,10 @@ void Renderer::setColor(int row, int col, Color color) {
     return;
   }
 
-  unsigned int r = linearToGamma(color.x) * 255.999;
-  unsigned int g = linearToGamma(color.y) * 255.999;
-  unsigned int b = linearToGamma(color.z) * 255.999;
-  unsigned int a = color.w * 255.999;
+  unsigned int r = linearToGamma(clamp(color.x, 0, 1)) * 255.999;
+  unsigned int g = linearToGamma(clamp(color.y, 0, 1)) * 255.999;
+  unsigned int b = linearToGamma(clamp(color.z, 0, 1)) * 255.999;
+  unsigned int a = clamp(color.w, 0, 1) * 255.999;
 
   pixels[row * width + col] = r | (g << 8) | (b << 16) | (a << 24);
 }
