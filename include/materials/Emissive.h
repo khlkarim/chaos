@@ -5,10 +5,10 @@
 #include "textures/SolidColor.h"
 #include "components/Material.h"
 
-class Lambertian : public Material {
+class Emissive : public Material {
 public:
-  Lambertian(Color albedo = COLOR_WHITE) : texture(std::make_shared<SolidColor>(albedo)) {}
-  Lambertian(std::shared_ptr<Texture> texture) : texture(texture) {}
+  Emissive(Color albedo = COLOR_WHITE) : texture(std::make_shared<SolidColor>(albedo)) {}
+  Emissive(std::shared_ptr<Texture> texture) : texture(texture) {}
 
   std::shared_ptr<Texture> getTexture();
   void setTexture(std::shared_ptr<Texture> tex);

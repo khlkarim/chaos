@@ -1,13 +1,14 @@
 #include <memory>
 
-#include "components/SDF.h"
-#include "components/Mesh.h"
+#include "components/Geometry.h"
+#include "components/Hierarchy.h"
 #include "components/Material.h"
 #include "components/Transform.h"
 
 #include "renderer/Scene.h"
 
-Scene::Scene(Camera c) : camera(c) {}
+Scene::Scene() { initLights(); }
+Scene::Scene(Camera c) : camera(c) { initLights(); }
 
 Camera &Scene::getCamera() { return camera; }
 const Camera &Scene::getCamera() const { return camera; }
@@ -17,25 +18,36 @@ EntityManager &Scene::getEntityManager() { return em; }
 const EntityManager &Scene::getEntityManager() const { return em; }
 void Scene::setEntityManager(EntityManager em) { this->em = em; }
 
+EntityId Scene::getLights() const { return lights; }
+void Scene::setLights(EntityId l) { lights = l; }
+
 std::shared_ptr<Skybox> Scene::getSkybox() { return skybox; }
 void Scene::setSkybox(std::shared_ptr<Skybox> s) { skybox = s; }
 
-Color Scene::getColor(const Ray &ray, int depth) {
+void Scene::setColor(Ray &ray, int depth) {
   if (depth == 0) {
-    return COLOR_BLACK;
+    ray.setColor(COLOR_BLACK);
+    return;
   }
 
+  Color color = COLOR_MAGENTA;
   Intersection inter = intersect(ray);
 
-  if (inter.t > 0 && em.has<Material>(inter.eId)) {
-    auto mat = em.get<Material>(inter.eId);
-    auto reflected = mat->reflect(ray, inter);
-    return mat->mix(getColor(reflected, depth - 1));
+  if (inter.getT() > 0 && em.has<Material>(inter.getEntity())) {
+    auto mat = em.get<Material>(inter.getEntity());
+
+    mat->scatter(inter);
+    for (auto &r : inter.getScatteredRays()) {
+      setColor(r, depth - 1);
+    }
+    mat->emit(*this, inter);
+
+    color = inter.getIncidentRay().getColor();
   } else if (skybox != nullptr) {
-    return skybox->getColor(ray);
+    color = skybox->getColor(ray);
   }
 
-  return COLOR_WHITE;
+  ray.setColor(color);
 }
 
 Intersection Scene::intersect(const Ray &ray) {
@@ -45,32 +57,30 @@ Intersection Scene::intersect(const Ray &ray) {
 
   while (it.hasNext()) {
     curr = it.next();
-
-    if (em.has<SDF>(curr)) {
-      auto sdf = em.get<SDF>(curr);
-
-      if (em.has<Transform>(curr)) {
-        auto transform = em.get<Transform>(curr);
-        currInter = sdf->intersect(ray, *transform);
-      } else {
-        currInter = sdf->intersect(ray);
-      }
-    } else if (em.has<Mesh>(curr)) {
-      auto mesh = em.get<Mesh>(curr);
-
-      if (em.has<Transform>(curr)) {
-        auto transform = em.get<Transform>(curr);
-        currInter = mesh->intersect(ray, *transform);
-      } else {
-        currInter = mesh->intersect(ray);
-      }
+    if (!em.has<Geometry>(curr)) {
+      continue;
     }
 
-    if (currInter.t > 0 && (inter.t == -1 || currInter.t < inter.t)) {
+    auto geometry = em.get<Geometry>(curr);
+
+    if (em.has<Transform>(curr)) {
+      auto transform = em.get<Transform>(curr);
+      currInter = geometry->intersect(ray, *transform);
+    } else {
+      currInter = geometry->intersect(ray);
+    }
+
+    if (currInter.getT() > 0 && (inter.getT() == -1 || currInter.getT() < inter.getT())) {
       inter = currInter;
-      inter.eId = curr;
+      inter.setEntity(curr);
     }
   }
 
   return inter;
+}
+
+void Scene::initLights() {
+  lights = em.createEntity();
+  auto hierarchy = std::make_shared<Hierarchy>();
+  em.set(lights, hierarchy);
 }

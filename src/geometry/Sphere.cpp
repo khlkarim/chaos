@@ -3,15 +3,13 @@
 #include "utils/math.h"
 #include "geometry/Sphere.h"
 
-float Sphere::getRadius() const { return radius; }
-void Sphere::setRadius(float r) { radius = r; }
-
 Intersection Sphere::intersect(const Ray &ray, const Transform &transform) const {
   Intersection inter;
 
   Vec3 dir = ray.getDirection();
   Vec3 origin = ray.getOrigin();
   Vec3 center = transform.getPosition();
+  float radius = transform.getScale().x;
 
   Vec3 oc = center - origin;
   auto a = dir.length2();
@@ -21,20 +19,20 @@ Intersection Sphere::intersect(const Ray &ray, const Transform &transform) const
   auto discriminant = b * b - 4 * a * c;
 
   if (discriminant >= 0) {
+    float t = -1;
     if (c > 0) {
-      inter.t = (-b - std::sqrt(discriminant)) / (2.0 * a);
+      t = (-b - std::sqrt(discriminant)) / (2.0 * a);
     } else {
-      inter.t = (-b + std::sqrt(discriminant)) / (2.0 * a);
+      t = (-b + std::sqrt(discriminant)) / (2.0 * a);
     }
 
-    Vec3 pos = ray.at(inter.t);
-    inter.normal = normalize(pos - center);
-    inter.texCoords = getTexCoords(inter.normal);
+    Vec3 pos = ray.at(t);
+    Vec3 normal = normalize(pos - center);
 
-    if (dot(inter.normal, dir) > 0) {
-      inter.normal *= -1;
-      inter.isFrontFace = false;
-    }
+    inter.setT(t);
+    inter.setIncidentRay(ray);
+    inter.setNormal(normal, dir);
+    inter.setTexCoords(getTexCoords(inter.getNormal()));
   }
 
   return inter;

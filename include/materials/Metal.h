@@ -14,8 +14,8 @@ public:
   std::shared_ptr<Texture> getTexture();
   void setTexture(std::shared_ptr<Texture> tex);
 
-  bool scatter(const Ray &ray, const Intersection &inter, Ray &scattered) const override;
-  Color emit(Scene &scene, const Ray &ray, const Intersection &inter, const Color &scattered) const override;
+  void scatter(Intersection &inter) const override;
+  void emit(Scene &scene, Intersection &inter) const override;
 
 private:
   float fuzz;

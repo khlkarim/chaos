@@ -1,5 +1,11 @@
 #include "geometry/Ray.h"
 
+Ray::Type Ray::getType() const { return type; }
+void Ray::setType(Type t) { type = t; }
+
+Color Ray::getColor() const { return color; }
+void Ray::setColor(Color c) { color = c; }
+
 Vec3 Ray::getOrigin() const { return origin; }
 void Ray::setOrigin(Vec3 o) { origin = o; }
 

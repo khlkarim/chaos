@@ -78,9 +78,10 @@ void Renderer::render(Scene &scene) {
 
         Vec3 origin = pixel00 + (i + rand.x) * dU + (j + rand.y) * dV;
         Vec3 direction = normalize(origin - pos);
-        Ray r(origin, direction);
+        Ray ray(origin, direction);
 
-        color += scene.getColor(r, maxDepth);
+        scene.setColor(ray, maxDepth);
+        color += ray.getColor();
       }
 
       color /= samplesPerPixel;

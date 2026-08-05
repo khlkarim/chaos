@@ -15,7 +15,7 @@ const std::vector<unsigned int> &Mesh::getIndices() const { return indices; }
 void Mesh::setIndices(const std::vector<unsigned int> &i) { indices = i; }
 
 Intersection Mesh::intersect(const Ray &ray, const Transform &transform) const {
-  Intersection inter, currInter;
+  Intersection inter;
 
   for (int i = 0; i < indices.size(); i += 3) {
     std::vector<Vertex> tri(3);
@@ -29,24 +29,24 @@ Intersection Mesh::intersect(const Ray &ray, const Transform &transform) const {
       edges[j] = tri[(j + 1) % 3].position - tri[j].position;
     }
 
-    currInter.normal = normalize(cross(edges[0], -edges[2]));
-    float distance = -dot(tri[0].position, currInter.normal);
+    Vec3 normal = normalize(cross(edges[0], -edges[2]));
+    float distance = -dot(tri[0].position, normal);
     Vec3 rayDir = ray.getDirection(), rayOrig = ray.getOrigin();
 
-    if (std::abs(dot(rayDir, currInter.normal)) < EPSILON) {
+    if (std::abs(dot(rayDir, normal)) < EPSILON) {
       continue;
     }
 
-    currInter.t = -(dot(currInter.normal, rayOrig) + distance) / dot(currInter.normal, rayDir);
-    if (currInter.t < 0) {
+    float t = -(dot(normal, rayOrig) + distance) / dot(normal, rayDir);
+    if (t < 0) {
       continue;
     }
 
     bool inside = true;
-    Vec3 n, p = ray.at(currInter.t);
+    Vec3 n, p = ray.at(t);
     for (int j = 0; j < 3 && inside; j++) {
       n = normalize(cross(edges[j], p - tri[j].position));
-      if (dot(n, currInter.normal) < 0) {
+      if (dot(n, normal) < 0) {
         inside = false;
       }
     }
@@ -55,21 +55,22 @@ Intersection Mesh::intersect(const Ray &ray, const Transform &transform) const {
       continue;
     }
 
-    if (inter.t == -1 || (currInter.t > 0 && currInter.t < inter.t)) {
-      inter = currInter;
-
+    if (inter.getT() == -1 || (t > 0 && t < inter.getT())) {
       Vec3 uvw = getBarycentricCoords(tri, p);
-      Vec3 n0 = tri[0].normal, n1 = tri[1].normal, n2 = tri[2].normal;
-      Vec2 tex0 = tri[0].texCoords, tex1 = tri[1].texCoords, tex2 = tri[2].texCoords;
 
-      inter.normal = uvw.x * n1 + uvw.y * n2 + uvw.z * n0;
-      inter.texCoords = uvw.x * tex1 + uvw.y * tex2 + uvw.z * tex0;
+      Vec3 n0 = normalize(tri[0].normal.rotate(transform.getRotation()));
+      Vec3 n1 = normalize(tri[1].normal.rotate(transform.getRotation()));
+      Vec3 n2 = normalize(tri[2].normal.rotate(transform.getRotation()));
+
+      Vec2 tex0 = tri[0].texCoords;
+      Vec2 tex1 = tri[1].texCoords;
+      Vec2 tex2 = tri[2].texCoords;
+
+      inter.setT(t);
+      inter.setIncidentRay(ray);
+      inter.setNormal(uvw.x * n1 + uvw.y * n2 + uvw.z * n0, rayDir);
+      inter.setTexCoords(uvw.x * tex1 + uvw.y * tex2 + uvw.z * tex0);
     }
-  }
-
-  if (inter.t > 0 && dot(inter.normal, ray.getDirection()) > 0) {
-    inter.normal *= -1;
-    inter.isFrontFace = false;
   }
 
   return inter;
