@@ -1,16 +1,14 @@
+#define SHARED_IMPLEMENTATION
+#include "shared.h"
+
 #include <cmath>
-#include <memory>
 #include <string>
 #include <iostream>
-
-#include "io/IO.h"
 #include "utils/math.h"
-#include "materials/Lambertian.h"
+#include "materials/Dielectric.h"
 
-constexpr int IMAGE_WIDTH = 640;
-constexpr int IMAGE_HEIGHT = 360;
-constexpr const char *INPUT_FILE_PATH = "./assets/cube.obj";
-constexpr IO::FileFormat INPUT_FILE_FORMAT = IO::FileFormat::OBJ;
+constexpr const char *MODEL_FILE_PATH = "./assets/models/cube.obj";
+constexpr IO::FileFormat MODEL_FILE_FORMAT = IO::FileFormat::OBJ;
 
 constexpr int FPS = 30;
 constexpr float DURATION = 2;
@@ -22,12 +20,12 @@ void init(Scene &scene);
 void init(Camera &camera);
 void update(Scene &scene, float t);
 void update(Camera &camera, float t);
-EntityId loadModel(EntityManager &em, const std::string &path);
 
 int main() {
   Scene scene;
   Renderer renderer(IMAGE_WIDTH, IMAGE_HEIGHT);
-  renderer.setSamplesPerPixel(5);
+  renderer.setSamplesPerPixel(RENDERER_SAMPLES_PER_PIXEL);
+  renderer.setMaxDepth(RENDERER_MAX_DEPTH);
 
   init(scene);
 
@@ -50,9 +48,13 @@ int main() {
 void init(Scene &scene) {
   auto &camera = scene.getCamera();
   auto &em = scene.getEntityManager();
-
   init(camera);
-  loadModel(em, INPUT_FILE_PATH);
+
+  auto cube = loadModel(scene, MODEL_FILE_PATH, MODEL_FILE_FORMAT);
+
+  auto material = std::make_shared<Dielectric>(1.5);
+  auto transform = std::make_shared<Transform>(Vec3(-0.5, -0.5, -0.5));
+  em.setAll(cube, {material, transform});
 }
 
 void init(Camera &camera) {
@@ -75,17 +77,4 @@ void update(Camera &camera, float t) {
 
   camera.setYaw(yaw);
   camera.setPosition(pos);
-}
-
-EntityId loadModel(EntityManager &em, const std::string &path) {
-  auto model = em.createEntity();
-
-  auto material = std::make_shared<Lambertian>(COLOR_GREY);
-  auto mesh = std::make_shared<Mesh>();
-  auto transform = std::make_shared<Transform>(Vec3(-0.5, -0.5, -0.5));
-
-  IO::load(*mesh, path, INPUT_FILE_FORMAT);
-  em.setAll(model, {mesh, material, transform});
-
-  return model;
 }
