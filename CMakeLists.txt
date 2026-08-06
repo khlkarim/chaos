@@ -64,10 +64,13 @@ set(SOURCES
   ./src/utils/stb_image_write.cpp
 )
 
+find_package(OpenMP REQUIRED)
+
 function(build_test test)
   add_executable(${test})
   target_sources(${test} PRIVATE ./test/${test}.cpp ${SOURCES})
   target_include_directories(${test} PRIVATE ./include ./test)
+  target_link_libraries(${test} PRIVATE OpenMP::OpenMP_CXX)
 endfunction()
 
 foreach(item IN LISTS TESTS)

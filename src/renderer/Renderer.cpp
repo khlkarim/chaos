@@ -72,6 +72,7 @@ void Renderer::render(Scene &scene) {
   float workloadProgressPercentage = 0;
   int totalWorkload = h * w;
 
+#pragma omp parallel for
   for (int j = 0; j < h; j++) {
     for (int i = 0; i < w; i++) {
       Color color;
