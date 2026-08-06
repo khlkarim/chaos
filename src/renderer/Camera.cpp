@@ -1,7 +1,7 @@
 #include <cmath>
 
-#include "renderer/Camera.h"
 #include "utils/math.h"
+#include "renderer/Camera.h"
 
 float Camera::getFov() const { return fov; }
 void Camera::setFov(float f) { fov = f; }

@@ -1,5 +1,5 @@
-#include "utils/string.h"
 #include <fstream>
+#include "utils/string.h"
 
 bool isWhitespace(const std::string &s) {
   for (auto c : s) {

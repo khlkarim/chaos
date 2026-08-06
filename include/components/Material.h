@@ -1,8 +1,6 @@
 #pragma once
 
 #include "renderer/Scene.h"
-#include "components/Component.h"
-#include "geometry/Intersection.h"
 
 class Material : public Component {
 public:
@@ -11,4 +9,8 @@ public:
 
   virtual void scatter(Intersection &inter) const = 0;
   virtual void emit(Scene &scene, Intersection &inter) const = 0;
+
+protected:
+  virtual Color processLights(Scene &scene, Intersection &inter) const;
+  virtual Color processLight(Scene &scene, Intersection &inter, EntityId light) const { return 0; }
 };

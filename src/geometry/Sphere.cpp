@@ -5,15 +5,14 @@
 
 Intersection Sphere::intersect(const Ray &ray, const Transform &transform) const {
   Intersection inter;
-
-  Vec3 dir = ray.getDirection();
   Vec3 origin = ray.getOrigin();
+  Vec3 rayDir = ray.getDirection();
   Vec3 center = transform.getPosition();
   float radius = transform.getScale().x;
 
   Vec3 oc = center - origin;
-  auto a = dir.length2();
-  auto b = -2.0 * dot(dir, oc);
+  auto a = rayDir.length2();
+  auto b = -2.0 * dot(rayDir, oc);
   auto c = oc.length2() - radius * radius;
 
   auto discriminant = b * b - 4 * a * c;
@@ -31,7 +30,7 @@ Intersection Sphere::intersect(const Ray &ray, const Transform &transform) const
 
     inter.setT(t);
     inter.setIncidentRay(ray);
-    inter.setNormal(normal, dir);
+    inter.setNormal(normal, rayDir);
     inter.setTexCoords(getTexCoords(inter.getNormal()));
   }
 

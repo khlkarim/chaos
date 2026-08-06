@@ -17,6 +17,9 @@ public:
   void scatter(Intersection &inter) const override;
   void emit(Scene &scene, Intersection &inter) const override;
 
+protected:
+  Color processLight(Scene &scene, Intersection &inter, EntityId light) const override;
+
 private:
   float fuzz;
   std::shared_ptr<Texture> texture;

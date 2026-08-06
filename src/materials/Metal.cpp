@@ -1,8 +1,7 @@
 #include <cmath>
+
 #include "materials/Metal.h"
-#include "components/Hierarchy.h"
 #include "components/Transform.h"
-#include "materials/Dielectric.h"
 
 float Metal::getFuzz() const { return fuzz; }
 void Metal::setFuzz(float f) { fuzz = f; }
@@ -27,48 +26,36 @@ void Metal::emit(Scene &scene, Intersection &inter) const {
   auto &ray = inter.getIncidentRay();
   auto &scattered = inter.getScatteredRays();
 
-  auto lights = scene.getLights();
-  auto &em = scene.getEntityManager();
-
   for (auto &r : scattered) {
     if (r.getType() == Ray::REFLECTED) {
       emitted += r.getColor();
     }
   }
 
-  if (em.has<Hierarchy>(lights)) {
-    auto hierarchy = em.get<Hierarchy>(lights);
-    auto &children = hierarchy->getChildren();
-
-    for (auto light : children) {
-      if (em.hasAll(light, {Component::TRANSFORM, Component::MATERIAL})) {
-        auto material = em.get<Material>(light);
-        auto transform = em.get<Transform>(light);
-
-        auto lightPos = transform->getPosition();
-        auto origin = inter.getReflectionOrigin();
-        auto direction = normalize(lightPos - origin);
-        auto lightT = (lightPos - origin).length();
-
-        Ray shadowRay(origin, direction);
-        auto shadowInter = scene.intersect(shadowRay);
-        material->emit(scene, shadowInter);
-
-        auto lightColor = shadowInter.getIncidentRay().getColor();
-        auto hitMaterial = em.get<Material>(shadowInter.getEntity());
-        auto isDielectric = std::dynamic_pointer_cast<Dielectric>(hitMaterial) != nullptr;
-
-        if (shadowInter.getT() == -1 || shadowInter.getT() >= lightT || isDielectric) {
-          for (auto &r : scattered) {
-            if (r.getType() == Ray::REFLECTED) {
-              float specular = std::pow(std::fmax(dot(r.getDirection(), direction), 0.0), 100 * (1 - fuzz));
-              emitted += lightColor * specular;
-            }
-          }
-        }
-      }
-    }
-  }
-
+  emitted += processLights(scene, inter);
   ray.setColor(emitted * texture->at(inter.getTexCoords()));
+}
+
+Color Metal::processLight(Scene &scene, Intersection &inter, EntityId light) const {
+  auto &ray = inter.getIncidentRay();
+  auto &em = scene.getEntityManager();
+
+  auto material = em.get<Material>(light);
+  auto transform = em.get<Transform>(light);
+
+  auto lightPos = transform->getPosition();
+  auto origin = inter.getReflectionOrigin();
+  auto direction = normalize(lightPos - origin);
+  auto lightT = (lightPos - origin).length();
+
+  Intersection shadowInter;
+  shadowInter.setT(lightT);
+  shadowInter.setEntity(light);
+  shadowInter.setIncidentRay(Ray(origin, direction));
+  material->emit(scene, shadowInter);
+
+  auto lightColor = shadowInter.getIncidentRay().getColor();
+  auto reflectionDir = ray.getDirection().reflect(inter.getNormal());
+  float specular = std::pow(std::fmax(dot(reflectionDir, direction), 0.0), 100 * (1 - fuzz));
+  return lightColor * specular;
 }

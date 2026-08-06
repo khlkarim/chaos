@@ -5,8 +5,14 @@ Quad::Quad(float w, float h) : Mesh(computeVertices(w, h), computeIndices(w, h))
 
 std::vector<Vertex> Quad::computeVertices(float w, float h) {
   Vec3 dim(w, h, 0);
+
   std::vector<Vertex> vertices;
-  std::vector<Vec3> directions = {{-0.5, -0.5, 0}, {0.5, -0.5, 0}, {-0.5, 0.5, 0}, {0.5, 0.5, 0}};
+  std::vector<Vec3> directions = {
+      {-0.5, -0.5, 0}, //
+      {0.5, -0.5, 0},
+      {-0.5, 0.5, 0},
+      {0.5, 0.5, 0},
+  };
 
   for (auto d : directions) {
     Vertex v;

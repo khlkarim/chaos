@@ -25,26 +25,26 @@ std::shared_ptr<Skybox> Scene::getSkybox() { return skybox; }
 void Scene::setSkybox(std::shared_ptr<Skybox> s) { skybox = s; }
 
 void Scene::setColor(Ray &ray, int depth) {
-  if (depth == 0) {
-    ray.setColor(COLOR_BLACK);
-    return;
-  }
-
   Color color = COLOR_MAGENTA;
-  Intersection inter = intersect(ray);
 
-  if (inter.getT() > 0 && em.has<Material>(inter.getEntity())) {
-    auto mat = em.get<Material>(inter.getEntity());
+  if (depth == 0) {
+    color = skybox == nullptr ? color : skybox->getColor(ray);
+  } else {
+    Intersection inter = intersect(ray);
 
-    mat->scatter(inter);
-    for (auto &r : inter.getScatteredRays()) {
-      setColor(r, depth - 1);
+    if (inter.getT() > 0 && em.has<Material>(inter.getEntity())) {
+      auto mat = em.get<Material>(inter.getEntity());
+
+      mat->scatter(inter);
+      for (auto &r : inter.getScatteredRays()) {
+        setColor(r, depth - 1);
+      }
+      mat->emit(*this, inter);
+
+      color = inter.getIncidentRay().getColor();
+    } else {
+      color = skybox == nullptr ? color : skybox->getColor(ray);
     }
-    mat->emit(*this, inter);
-
-    color = inter.getIncidentRay().getColor();
-  } else if (skybox != nullptr) {
-    color = skybox->getColor(ray);
   }
 
   ray.setColor(color);

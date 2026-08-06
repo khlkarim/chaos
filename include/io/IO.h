@@ -3,7 +3,6 @@
 #include <string>
 
 #include "geometry/Mesh.h"
-#include "renderer/Scene.h"
 #include "textures/Image.h"
 #include "renderer/Renderer.h"
 

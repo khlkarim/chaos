@@ -20,6 +20,9 @@ int Renderer::getWidth() const { return width; }
 float Renderer::getAspectRatio() const { return aspectRatio; }
 int Renderer::getHeight() const { return std::max(1, static_cast<int>(width / aspectRatio)); }
 
+float Renderer::getViewportHeight() const { return viewportHeight; }
+void Renderer::setViewportHeight(float h) { viewportHeight = h; }
+
 int Renderer::getMaxDepth() const { return maxDepth; }
 void Renderer::setMaxDepth(int depth) { maxDepth = depth; }
 
@@ -49,15 +52,15 @@ void Renderer::render(Scene &scene) {
 
   float fov = camera.getFov();
   float np = camera.getNearPlane();
-  float viewportHeight = 2.0 * std::tan(toRadians(fov)) * np;
-  float viewportWidth = a * viewportHeight;
+  float vH = 2.0 * std::tan(toRadians(fov)) * np * viewportHeight;
+  float vW = a * vH;
 
-  std::cout << "Viewport Width: " << viewportWidth << std::endl;
-  std::cout << "Viewport Height: " << viewportHeight << std::endl;
+  std::cout << "Viewport Width: " << vW << std::endl;
+  std::cout << "Viewport Height: " << vH << std::endl;
   std::cout << std::endl;
 
-  Vec3 u = viewportWidth * right;
-  Vec3 v = -viewportHeight * up;
+  Vec3 u = vW * right;
+  Vec3 v = -vH * up;
   Vec3 dU = u / w;
   Vec3 dV = v / h;
   Vec3 pixel00 = pos + np * front - 0.5 * (u + v) + 0.5 * (dU + dV);

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "geometry/Ray.h"
 #include "components/Transform.h"
 #include "geometry/Intersection.h"
 

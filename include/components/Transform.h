@@ -9,7 +9,7 @@ public:
   Type getType() const override;
 
   Transform() = default;
-  Transform(Vec3 position, Vec3 scale = Vec3(1)) : position(position), scale(scale) {}
+  Transform(Vec3 p, Vec3 s = 1, Vec3 r = 0) : position(p), scale(s), rotation(r) {}
 
   Vec3 getPosition() const;
   void setPosition(Vec3 p);

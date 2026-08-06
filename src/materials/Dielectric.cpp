@@ -5,34 +5,33 @@ float Dielectric::getRefractiveIndex() const { return refractiveIndex; }
 void Dielectric::setRefractiveIndex(float n) { refractiveIndex = n; }
 
 void Dielectric::scatter(Intersection &inter) const {
+  auto normal = inter.getNormal();
   auto &ray = inter.getIncidentRay();
   auto &scattered = inter.getScatteredRays();
-
-  Vec3 normal = inter.getNormal();
-  Vec3 rayDir = ray.getDirection();
-
   float ri = inter.getIsFrontFace() ? 1 / refractiveIndex : refractiveIndex;
-  float a = std::fmin(-dot(rayDir, normal), 1);
-  float b = std::sqrt(1 - a * a);
 
-  Vec3 origin = inter.getReflectionOrigin();
-  Vec3 direction = rayDir.reflect(normal);
-  Ray reflected(origin, direction, Ray::REFLECTED);
-  scattered.push_back(reflected);
+  Vec3 origin, direction, rayDir = ray.getDirection();
+  float cosine = clamp(-dot(rayDir, normal), 0, 1);
+  float sine = std::sqrt(1 - cosine * cosine);
 
-  if (ri * b <= 1.0) {
+  origin = inter.getReflectionOrigin();
+  direction = normalize(rayDir.reflect(normal));
+  scattered.push_back(Ray(origin, direction, Ray::REFLECTED));
+
+  if (ri * sine <= 1) {
     origin = inter.getRefractionOrigin();
-    direction = rayDir.refract(normal, ri);
-    Ray refracted(origin, direction, Ray::REFRACTED);
-    scattered.push_back(refracted);
+    direction = normalize(rayDir.refract(normal, ri));
+    scattered.push_back(Ray(origin, direction, Ray::REFRACTED));
   }
 }
 
 void Dielectric::emit(Scene &scene, Intersection &inter) const {
-  Color emitted = COLOR_BLACK;
+  auto normal = inter.getNormal();
   auto &ray = inter.getIncidentRay();
   auto &scattered = inter.getScatteredRays();
+  float ri = inter.getIsFrontFace() ? 1 / refractiveIndex : refractiveIndex;
 
+  Color emitted = COLOR_BLACK;
   Color reflectedColor = COLOR_BLACK;
   Color refractedColor = COLOR_BLACK;
 
@@ -44,8 +43,16 @@ void Dielectric::emit(Scene &scene, Intersection &inter) const {
     }
   }
 
-  float a = std::fmin(dot(-ray.getDirection(), inter.getNormal()), 1);
-  float reflectance = 0.5 * std::pow(1 - a, 5);
-  emitted = reflectance * reflectedColor + (1 - reflectance) * refractedColor;
+  Vec3 rayDir = ray.getDirection();
+  float cosine = clamp(dot(-rayDir, normal), 0, 1);
+  float sine = std::sqrt(1 - cosine * cosine);
+
+  if (ri * sine <= 1) {
+    float reflectance = 0.5 * std::pow(1 - cosine, 5);
+    emitted = reflectance * reflectedColor + (1 - reflectance) * refractedColor;
+  } else {
+    emitted = reflectedColor;
+  }
+
   ray.setColor(emitted);
 }

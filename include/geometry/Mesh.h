@@ -20,11 +20,10 @@ public:
 
   Intersection intersect(const Ray &ray, const Transform &transform = Transform()) const override;
 
+  static Vec3 getBarycentricCoords(const std::vector<Vertex> &tri, Vec3 p);
   static void computeNormals(std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices);
 
 protected:
-  static Vec3 getBarycentricCoords(const std::vector<Vertex> &tri, Vec3 p);
-
   std::vector<Vertex> vertices;
   std::vector<unsigned int> indices;
 };

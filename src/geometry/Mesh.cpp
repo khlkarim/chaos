@@ -24,6 +24,7 @@ Intersection Mesh::intersect(const Ray &ray, const Transform &transform) const {
     for (int j = 0; j < 3; j++) {
       tri[j] = vertices[indices[i + j]];
       tri[j].position = transform.apply(tri[j].position);
+      tri[j].normal = normalize(tri[j].normal.rotate(transform.getRotation()));
     }
     for (int j = 0; j < 3; j++) {
       edges[j] = tri[(j + 1) % 3].position - tri[j].position;
@@ -57,19 +58,13 @@ Intersection Mesh::intersect(const Ray &ray, const Transform &transform) const {
 
     if (inter.getT() == -1 || (t > 0 && t < inter.getT())) {
       Vec3 uvw = getBarycentricCoords(tri, p);
-
-      Vec3 n0 = normalize(tri[0].normal.rotate(transform.getRotation()));
-      Vec3 n1 = normalize(tri[1].normal.rotate(transform.getRotation()));
-      Vec3 n2 = normalize(tri[2].normal.rotate(transform.getRotation()));
-
-      Vec2 tex0 = tri[0].texCoords;
-      Vec2 tex1 = tri[1].texCoords;
-      Vec2 tex2 = tri[2].texCoords;
+      Vec3 n0 = tri[0].normal, n1 = tri[1].normal, n2 = tri[2].normal;
+      Vec2 tex0 = tri[0].texCoords, tex1 = tri[1].texCoords, tex2 = tri[2].texCoords;
 
       inter.setT(t);
       inter.setIncidentRay(ray);
-      inter.setNormal(uvw.x * n1 + uvw.y * n2 + uvw.z * n0, rayDir);
       inter.setTexCoords(uvw.x * tex1 + uvw.y * tex2 + uvw.z * tex0);
+      inter.setNormal(uvw.x * n1 + uvw.y * n2 + uvw.z * n0, rayDir);
     }
   }
 

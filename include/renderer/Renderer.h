@@ -14,6 +14,8 @@ public:
   int getWidth() const;
   int getHeight() const;
   float getAspectRatio() const;
+  float getViewportHeight() const;
+  void setViewportHeight(float h);
   void setDimensions(int w, int h);
 
   int getMaxDepth() const;
@@ -27,6 +29,7 @@ public:
 
 private:
   int width = 1280;
+  float viewportHeight = 1;
   float aspectRatio = 1280. / 720.;
 
   int maxDepth = 10;

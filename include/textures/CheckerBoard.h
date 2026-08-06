@@ -4,8 +4,8 @@
 
 class CheckerBoard : public Texture {
 public:
-  CheckerBoard(Color primary = COLOR_WHITE, Color secondary = COLOR_BLACK, float uFreq = 10, float vFreq = 10)
-      : primary(primary), secondary(secondary), uFreq(uFreq), vFreq(vFreq) {}
+  CheckerBoard(Color p = COLOR_WHITE, Color s = COLOR_BLACK, float uf = 10, float vf = 10)
+      : primary(p), secondary(s), uFreq(uf), vFreq(vf) {}
 
   Color getPrimary() const;
   void setPrimary(Color c);
