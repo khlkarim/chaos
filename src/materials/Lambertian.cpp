@@ -8,10 +8,11 @@ std::shared_ptr<Texture> Lambertian::getTexture() { return texture; }
 void Lambertian::setTexture(std::shared_ptr<Texture> tex) { texture = tex; }
 
 void Lambertian::scatter(Intersection &inter) const {
+  Vec3 normal = getNormal(inter);
   Vec3 rand = Vec3::getRandomUnitSphere();
 
   Vec3 origin = inter.getReflectionOrigin();
-  Vec3 direction = normalize(inter.getNormal() + rand);
+  Vec3 direction = normalize(normal + rand);
   Ray reflected(origin, direction, Ray::REFLECTED);
 
   inter.setScatteredRays({reflected});
@@ -33,6 +34,7 @@ void Lambertian::emit(Scene &scene, Intersection &inter) const {
 }
 
 Color Lambertian::processLight(Scene &scene, Intersection &inter, EntityId light) const {
+  Vec3 normal = getNormal(inter);
   auto &em = scene.getEntityManager();
   auto material = em.get<Material>(light);
   auto transform = em.get<Transform>(light);
@@ -49,6 +51,6 @@ Color Lambertian::processLight(Scene &scene, Intersection &inter, EntityId light
   material->emit(scene, shadowInter);
 
   auto lightColor = shadowInter.getIncidentRay().getColor();
-  float diffuse = std::fmin(dot(inter.getNormal(), direction), 1);
+  float diffuse = std::fmin(dot(normal, direction), 1);
   return lightColor * diffuse;
 }

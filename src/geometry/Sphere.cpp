@@ -31,6 +31,7 @@ Intersection Sphere::intersect(const Ray &ray, const Transform &transform) const
     inter.setT(t);
     inter.setIncidentRay(ray);
     inter.setNormal(normal, rayDir);
+    inter.setTriNormal(normal, rayDir);
     inter.setTexCoords(getTexCoords(inter.getNormal()));
   }
 

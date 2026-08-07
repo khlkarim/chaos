@@ -28,7 +28,9 @@ public:
   void setT(float t);
 
   Vec3 getNormal() const;
+  Vec3 getTriNormal() const;
   void setNormal(Vec3 outwardNormal, Vec3 rayDir);
+  void setTriNormal(Vec3 outwardNormal, Vec3 rayDir);
   bool getIsFrontFace() const;
 
   Vec2 getTexCoords() const;
@@ -48,6 +50,7 @@ private:
   std::vector<Ray> scattered;
 
   Vec3 normal;
+  Vec3 triNormal;
   Vec2 texCoords;
   bool isFrontFace = true;
   EntityId eId = EntityManager::NIL;

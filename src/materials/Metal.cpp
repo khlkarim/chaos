@@ -10,12 +10,14 @@ std::shared_ptr<Texture> Metal::getTexture() { return texture; }
 void Metal::setTexture(std::shared_ptr<Texture> tex) { texture = tex; }
 
 void Metal::scatter(Intersection &inter) const {
+  Vec3 normal = getNormal(inter);
   Vec3 rand = Vec3::getRandomUnitSphere();
+
   auto &ray = inter.getIncidentRay();
   Vec3 rayDir = ray.getDirection();
 
   Vec3 origin = inter.getReflectionOrigin();
-  Vec3 direction = normalize(rayDir.reflect(inter.getNormal()) + fuzz * rand);
+  Vec3 direction = normalize(rayDir.reflect(normal) + fuzz * rand);
   Ray reflected(origin, direction, Ray::REFLECTED);
 
   inter.setScatteredRays({reflected});
@@ -37,6 +39,7 @@ void Metal::emit(Scene &scene, Intersection &inter) const {
 }
 
 Color Metal::processLight(Scene &scene, Intersection &inter, EntityId light) const {
+  Vec3 normal = getNormal(inter);
   auto &ray = inter.getIncidentRay();
   auto &em = scene.getEntityManager();
 
@@ -55,7 +58,7 @@ Color Metal::processLight(Scene &scene, Intersection &inter, EntityId light) con
   material->emit(scene, shadowInter);
 
   auto lightColor = shadowInter.getIncidentRay().getColor();
-  auto reflectionDir = ray.getDirection().reflect(inter.getNormal());
+  auto reflectionDir = ray.getDirection().reflect(normal);
   float specular = std::pow(std::fmax(dot(reflectionDir, direction), 0.0), 100 * (1 - fuzz));
   return lightColor * specular;
 }

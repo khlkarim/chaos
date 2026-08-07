@@ -25,13 +25,19 @@ void Intersection::setScatteredRays(const std::vector<Ray> &r) { scattered = r; 
 float Intersection::getT() const { return t; }
 void Intersection::setT(float f) { t = f; }
 
-Vec3 Intersection::getNormal() const { return normal; }
-bool Intersection::getIsFrontFace() const { return isFrontFace; }
-
 void Intersection::setNormal(Vec3 outwardNormal, Vec3 rayDir) {
   isFrontFace = dot(outwardNormal, rayDir) < 0;
   normal = isFrontFace ? outwardNormal : -outwardNormal;
 }
+
+void Intersection::setTriNormal(Vec3 outwardNormal, Vec3 rayDir) {
+  isFrontFace = dot(outwardNormal, rayDir) < 0;
+  triNormal = isFrontFace ? outwardNormal : -outwardNormal;
+}
+
+Vec3 Intersection::getNormal() const { return normal; }
+Vec3 Intersection::getTriNormal() const { return triNormal; }
+bool Intersection::getIsFrontFace() const { return isFrontFace; }
 
 Vec2 Intersection::getTexCoords() const { return texCoords; }
 void Intersection::setTexCoords(Vec2 t) { texCoords = t; }

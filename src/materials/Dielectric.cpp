@@ -5,7 +5,7 @@ float Dielectric::getRefractiveIndex() const { return refractiveIndex; }
 void Dielectric::setRefractiveIndex(float n) { refractiveIndex = n; }
 
 void Dielectric::scatter(Intersection &inter) const {
-  auto normal = inter.getNormal();
+  auto normal = getNormal(inter);
   auto &ray = inter.getIncidentRay();
   auto &scattered = inter.getScatteredRays();
   float ri = inter.getIsFrontFace() ? 1 / refractiveIndex : refractiveIndex;
@@ -26,7 +26,7 @@ void Dielectric::scatter(Intersection &inter) const {
 }
 
 void Dielectric::emit(Scene &scene, Intersection &inter) const {
-  auto normal = inter.getNormal();
+  auto normal = getNormal(inter);
   auto &ray = inter.getIncidentRay();
   auto &scattered = inter.getScatteredRays();
   float ri = inter.getIsFrontFace() ? 1 / refractiveIndex : refractiveIndex;

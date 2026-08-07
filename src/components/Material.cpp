@@ -4,6 +4,13 @@
 
 Component::Type Material::getType() const { return TYPE; }
 
+bool Material::getSmoothShading() const { return smoothShading; }
+void Material::setSmoothShading(bool s) { smoothShading = s; }
+
+Vec3 Material::getNormal(const Intersection &inter) const {
+  return smoothShading ? inter.getNormal() : inter.getTriNormal();
+}
+
 Color Material::processLights(Scene &scene, Intersection &inter) const {
   auto emitted = COLOR_BLACK;
   auto lights = scene.getLights();

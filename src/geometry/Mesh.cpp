@@ -30,15 +30,15 @@ Intersection Mesh::intersect(const Ray &ray, const Transform &transform) const {
       edges[j] = tri[(j + 1) % 3].position - tri[j].position;
     }
 
-    Vec3 normal = normalize(cross(edges[0], -edges[2]));
-    float distance = -dot(tri[0].position, normal);
+    Vec3 triNormal = normalize(cross(edges[0], -edges[2]));
+    float distance = -dot(tri[0].position, triNormal);
     Vec3 rayDir = ray.getDirection(), rayOrig = ray.getOrigin();
 
-    if (std::abs(dot(rayDir, normal)) < EPSILON) {
+    if (std::abs(dot(rayDir, triNormal)) < EPSILON) {
       continue;
     }
 
-    float t = -(dot(normal, rayOrig) + distance) / dot(normal, rayDir);
+    float t = -(dot(triNormal, rayOrig) + distance) / dot(triNormal, rayDir);
     if (t < 0) {
       continue;
     }
@@ -47,7 +47,7 @@ Intersection Mesh::intersect(const Ray &ray, const Transform &transform) const {
     Vec3 n, p = ray.at(t);
     for (int j = 0; j < 3 && inside; j++) {
       n = normalize(cross(edges[j], p - tri[j].position));
-      if (dot(n, normal) < 0) {
+      if (dot(n, triNormal) < 0) {
         inside = false;
       }
     }
@@ -60,11 +60,18 @@ Intersection Mesh::intersect(const Ray &ray, const Transform &transform) const {
       Vec3 uvw = getBarycentricCoords(tri, p);
       Vec3 n0 = tri[0].normal, n1 = tri[1].normal, n2 = tri[2].normal;
       Vec2 tex0 = tri[0].texCoords, tex1 = tri[1].texCoords, tex2 = tri[2].texCoords;
+      bool hasTexCoords = !(tex0.x == 0 && tex0.y == 0 && tex1.x == 0 && tex1.y == 0 && tex2.x == 0 && tex2.y == 0);
 
       inter.setT(t);
       inter.setIncidentRay(ray);
-      inter.setTexCoords(uvw.x * tex1 + uvw.y * tex2 + uvw.z * tex0);
+      inter.setTriNormal(triNormal, rayDir);
       inter.setNormal(uvw.x * n1 + uvw.y * n2 + uvw.z * n0, rayDir);
+
+      if (hasTexCoords) {
+        inter.setTexCoords(uvw.x * tex1 + uvw.y * tex2 + uvw.z * tex0);
+      } else {
+        inter.setTexCoords(Vec2(uvw.x, uvw.y));
+      }
     }
   }
 
