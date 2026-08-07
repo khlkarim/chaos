@@ -19,7 +19,7 @@ Color Image::at(Vec2 texCoords) const {
   }
 
   int i = width * texCoords.x;
-  int j = height * texCoords.y;
+  int j = height * (1 - texCoords.y);
   int idx = (j * width + i) * channels;
 
   if (channels == 3) {
