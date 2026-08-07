@@ -5,12 +5,12 @@
 #include "utils/string.h"
 #include "io/OBJ.h"
 
-void OBJ::load(Mesh &mesh, const std::string &path) {
+std::shared_ptr<Mesh> OBJ::loadMesh(const std::string &path) {
   std::string line;
   std::ifstream f(path);
 
-  auto &vertices = mesh.getVertices();
-  auto &indices = mesh.getIndices();
+  std::vector<Vertex> vertices;
+  std::vector<unsigned int> indices;
 
   std::map<std::string, int> faces;
   std::vector<std::vector<float>> v, vn, vt;
@@ -86,6 +86,6 @@ void OBJ::load(Mesh &mesh, const std::string &path) {
     }
   }
 
-  Mesh::computeNormals(vertices, indices);
   f.close();
+  return std::make_shared<Mesh>(vertices, indices);
 }

@@ -6,9 +6,9 @@
 #include "utils/stb_image_write.h"
 
 #include "io/CRT.h"
-#include "io/IO.h"
 #include "io/OBJ.h"
 #include "io/PPM.h"
+#include "io/IO.h"
 
 void IO::save(const Renderer &renderer, const std::string &path, FileFormat format) {
   std::cout << "Saving rendered image to: " << path << std::endl;
@@ -58,30 +58,28 @@ void IO::load(Scene &scene, const std::string &path, FileFormat format) {
   }
 }
 
-void IO::load(Mesh &mesh, const std::string &path, FileFormat format) {
+std::shared_ptr<Mesh> IO::loadMesh(const std::string &path, FileFormat format) {
   std::cout << "Loading mesh from: " << path << std::endl;
 
   switch (format) {
   case OBJ:
-    OBJ::load(mesh, path);
+    return OBJ::loadMesh(path);
     break;
   case CRT:
-    CRT::load(mesh, path);
+    return CRT::loadMesh(path);
     break;
   default:
     std::cout << "Unsupported format." << std::endl;
+    return nullptr;
   }
 }
 
-void IO::load(Image &image, const std::string &path, FileFormat format) {
+std::shared_ptr<Image> IO::loadImage(const std::string &path, FileFormat format) {
   std::cout << "Loading image from: " << path << std::endl;
 
   int w = 0, h = 0, c = 0;
   float *d = stbi_loadf(path.c_str(), &w, &h, &c, 0);
-  int size = w * h * c;
 
-  image.setWidth(w);
-  image.setHeight(h);
-  image.setChannels(c);
-  image.setData(std::vector<float>(d, d + size));
+  int size = w * h * c;
+  return std::make_shared<Image>(w, h, c, std::vector<float>(d, d + size));
 }

@@ -4,5 +4,5 @@
 
 class OBJ {
 public:
-  static void load(Mesh &mesh, const std::string &path);
+  static std::shared_ptr<Mesh> loadMesh(const std::string &path);
 };
