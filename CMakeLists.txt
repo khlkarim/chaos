@@ -49,6 +49,7 @@ set(SOURCES
   ./src/skybox/Sky.cpp
   ./src/skybox/Monochrome.cpp
 
+  ./src/textures/Edge.cpp
   ./src/textures/Image.cpp
   ./src/textures/SolidColor.cpp
   ./src/textures/CheckerBoard.cpp

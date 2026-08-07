@@ -1,8 +1,6 @@
 #define SHARED_IMPLEMENTATION
 #include "shared.h"
 
-#include <memory>
-#include <string>
 #include "materials/Lambertian.h"
 
 constexpr const char *OUTPUT_FILE_PATH = "./cube-output-01.png";

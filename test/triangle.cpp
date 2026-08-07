@@ -1,7 +1,6 @@
 #define SHARED_IMPLEMENTATION
 #include "shared.h"
 
-#include <memory>
 #include "materials/Lambertian.h"
 
 constexpr const char *OUTPUT_FILE_PATH = "triangle-output-01.png";

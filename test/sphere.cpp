@@ -1,7 +1,6 @@
 #define SHARED_IMPLEMENTATION
 #include "shared.h"
 
-#include <memory>
 #include "materials/Metal.h"
 #include "materials/Dielectric.h"
 #include "materials/Lambertian.h"

@@ -1,7 +1,6 @@
 #define SHARED_IMPLEMENTATION
 #include "shared.h"
 
-#include <memory>
 #include "materials/Metal.h"
 #include "skybox/Monochrome.h"
 #include "materials/Emissive.h"

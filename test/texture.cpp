@@ -1,7 +1,6 @@
 #define SHARED_IMPLEMENTATION
 #include "shared.h"
 
-#include <memory>
 #include "materials/Lambertian.h"
 
 constexpr const char *OUTPUT_FILE_PATH = "texture-output-01.png";
@@ -28,12 +27,11 @@ void init(Scene &scene) {
   EntityManager &em = scene.getEntityManager();
   init(camera);
 
-  Image image;
-  IO::load(image, TEXTURE_FILE_PATH, TEXTURE_FILE_FORMAT);
-
-  auto mat = std::make_shared<Lambertian>(std::make_shared<Image>(image));
+  auto texture = IO::loadImage(TEXTURE_FILE_PATH, TEXTURE_FILE_FORMAT);
+  auto material = std::make_shared<Lambertian>(texture);
   auto transform = std::make_shared<Transform>(Vec3(0, 0, 0), Vec3(1));
-  drawSphere(scene, {transform, mat});
+
+  drawSphere(scene, {transform, material});
 }
 
 void init(Camera &camera) {

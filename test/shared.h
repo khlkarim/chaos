@@ -103,8 +103,7 @@ EntityId loadModel(Scene &scene, const std::string &path, IO::FileFormat format)
   auto &em = scene.getEntityManager();
   auto model = em.createEntity();
 
-  auto mesh = std::make_shared<Mesh>();
-  IO::load(*mesh, path, format);
+  auto mesh = IO::loadMesh(path, format);
   em.set(model, mesh);
   return model;
 }
