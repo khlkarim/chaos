@@ -58,9 +58,13 @@ void init(Scene &scene) {
   rightT->setRotation(Vec3(0, toRadians(90), 0));
   drawQuad(scene, {rightT, red});
 
-  auto leftMat = std::make_shared<Dielectric>(1.5);
-  auto leftTransform = std::make_shared<Transform>(Vec3(0, 0, 0), Vec3(0.5));
-  drawSphere(scene, {leftTransform, leftMat});
+  auto cMat = std::make_shared<Dielectric>(1.5);
+  auto cTransform = std::make_shared<Transform>(Vec3(-0.5));
+  drawCube(scene, {cTransform, cMat});
+
+  auto sMat = std::make_shared<Lambertian>(COLOR_RED);
+  auto sTransform = std::make_shared<Transform>(Vec3(0, 0, -1), 0.5);
+  drawSphere(scene, {sMat, sTransform});
 }
 
 void init(Camera &camera) { camera.setPosition(Vec3(0, 0, 2)); }

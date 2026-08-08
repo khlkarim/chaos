@@ -33,14 +33,14 @@ int main() {
           .baseFilename = "hw11-",
       },
       {
-          .count = 5,
+          .count = 2,
           .prefix = "./assets/hw12/",
           .baseFilename = "hw12-",
       },
   };
 
   for (auto &c : collections) {
-    for (int i = 0; i < c.count; i++) {
+    for (int i = 1; i < c.count; i++) {
       Scene scene;
       Renderer renderer(IMAGE_WIDTH, IMAGE_HEIGHT);
       renderer.setSamplesPerPixel(RENDERER_SAMPLES_PER_PIXEL);
@@ -48,7 +48,7 @@ int main() {
 
       auto idx = std::to_string(i);
       auto in = c.prefix + "scene" + idx + ".crtscene";
-      auto out = OUTPUT_FILE_PATH + c.baseFilename + idx + "png";
+      auto out = OUTPUT_FILE_PATH + c.baseFilename + "scene" + idx + ".png";
 
       IO::load(scene, in, INPUT_FILE_FORMAT);
       renderer.render(scene);
