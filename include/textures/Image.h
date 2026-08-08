@@ -22,7 +22,7 @@ public:
   const std::vector<float> &getData() const;
   void setData(const std::vector<float> &data);
 
-  Color at(Vec2 texCoords) const override;
+  virtual Color at(Vec2 texCoords) const override;
 
 private:
   std::vector<float> data;

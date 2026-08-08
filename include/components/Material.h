@@ -5,7 +5,7 @@
 class Material : public Component {
 public:
   static const Component::Type TYPE = Component::Type::MATERIAL;
-  Type getType() const override;
+  virtual Type getType() const override;
 
   bool getSmoothShading() const;
   void setSmoothShading(bool s);
@@ -16,7 +16,7 @@ public:
 
 protected:
   virtual Color processLights(Scene &scene, Intersection &inter) const;
-  virtual Color processLight(Scene &scene, Intersection &inter, EntityId light) const { return 0; }
+  virtual Color processLight(Scene &scene, Intersection &inter, Intersection &lightInter) const { return 0; }
 
-  bool smoothShading = true;
+  bool smoothShading = false;
 };

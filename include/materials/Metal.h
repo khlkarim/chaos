@@ -14,11 +14,11 @@ public:
   std::shared_ptr<Texture> getTexture();
   void setTexture(std::shared_ptr<Texture> tex);
 
-  void scatter(Intersection &inter) const override;
-  void emit(Scene &scene, Intersection &inter) const override;
+  virtual void scatter(Intersection &inter) const override;
+  virtual void emit(Scene &scene, Intersection &inter) const override;
 
 protected:
-  Color processLight(Scene &scene, Intersection &inter, EntityId light) const override;
+  virtual Color processLight(Scene &scene, Intersection &inter, Intersection &lightInter) const override;
 
 private:
   float fuzz;

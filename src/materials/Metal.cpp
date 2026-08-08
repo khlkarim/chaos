@@ -1,7 +1,6 @@
 #include <cmath>
 
 #include "materials/Metal.h"
-#include "components/Transform.h"
 
 float Metal::getFuzz() const { return fuzz; }
 void Metal::setFuzz(float f) { fuzz = f; }
@@ -38,27 +37,14 @@ void Metal::emit(Scene &scene, Intersection &inter) const {
   ray.setColor(emitted * texture->at(inter.getTexCoords()));
 }
 
-Color Metal::processLight(Scene &scene, Intersection &inter, EntityId light) const {
+Color Metal::processLight(Scene &scene, Intersection &inter, Intersection &lightInter) const {
   Vec3 normal = getNormal(inter);
   auto &ray = inter.getIncidentRay();
-  auto &em = scene.getEntityManager();
+  auto &lightRay = lightInter.getIncidentRay();
 
-  auto material = em.get<Material>(light);
-  auto transform = em.get<Transform>(light);
-
-  auto lightPos = transform->getPosition();
-  auto origin = inter.getReflectionOrigin();
-  auto direction = normalize(lightPos - origin);
-  auto lightT = (lightPos - origin).length();
-
-  Intersection shadowInter;
-  shadowInter.setT(lightT);
-  shadowInter.setEntity(light);
-  shadowInter.setIncidentRay(Ray(origin, direction));
-  material->emit(scene, shadowInter);
-
-  auto lightColor = shadowInter.getIncidentRay().getColor();
+  auto lightColor = lightRay.getColor();
   auto reflectionDir = ray.getDirection().reflect(normal);
-  float specular = std::pow(std::fmax(dot(reflectionDir, direction), 0.0), 100 * (1 - fuzz));
+  float specular = std::pow(std::fmax(dot(reflectionDir, lightRay.getDirection()), 0.0), 100 * (1 - fuzz));
+
   return lightColor * specular;
 }

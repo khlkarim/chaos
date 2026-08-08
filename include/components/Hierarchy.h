@@ -7,7 +7,7 @@
 class Hierarchy : public Component {
 public:
   static const Component::Type TYPE = Component::Type::HIERARCHY;
-  Type getType() const override;
+  virtual Type getType() const override;
 
   void add(EntityId child);
   void remove(EntityId child);

@@ -12,7 +12,7 @@ public:
   Color getEndColor() const;
   void setEndColor(Color c);
 
-  Color getColor(const Ray &ray) const override;
+  virtual Color getColor(const Ray &ray) const override;
 
 private:
   Color start, end;

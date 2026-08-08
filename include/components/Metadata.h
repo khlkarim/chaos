@@ -7,7 +7,7 @@
 class Metadata : public Component {
 public:
   static const Component::Type TYPE = Component::Type::METADATA;
-  Type getType() const override;
+  virtual Type getType() const override;
 
   Metadata() = default;
   Metadata(const std::string &name, bool isVisible = true) : name(name), isVisible(isVisible) {}

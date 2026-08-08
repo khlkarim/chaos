@@ -21,6 +21,12 @@ void Scene::setEntityManager(EntityManager em) { this->em = em; }
 EntityId Scene::getLights() const { return lights; }
 void Scene::setLights(EntityId l) { lights = l; }
 
+void Scene::initLights() {
+  lights = em.createEntity();
+  auto hierarchy = std::make_shared<Hierarchy>();
+  em.set(lights, hierarchy);
+}
+
 std::shared_ptr<Skybox> Scene::getSkybox() { return skybox; }
 void Scene::setSkybox(std::shared_ptr<Skybox> s) { skybox = s; }
 
@@ -77,10 +83,4 @@ Intersection Scene::intersect(const Ray &ray) {
   }
 
   return inter;
-}
-
-void Scene::initLights() {
-  lights = em.createEntity();
-  auto hierarchy = std::make_shared<Hierarchy>();
-  em.set(lights, hierarchy);
 }

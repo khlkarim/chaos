@@ -19,7 +19,7 @@ public:
   float getVFreq() const;
   void setVFreq(float f);
 
-  Color at(Vec2 texCoords) const override;
+  virtual Color at(Vec2 texCoords) const override;
 
 private:
   float uFreq, vFreq;

@@ -30,6 +30,8 @@ int Renderer::getSamplesPerPixel() const { return samplesPerPixel; }
 void Renderer::setSamplesPerPixel(int spp) { samplesPerPixel = spp; }
 
 void Renderer::render(Scene &scene) {
+  std::cout << std::endl;
+
   int w = getWidth();
   int h = getHeight();
   float a = getAspectRatio();

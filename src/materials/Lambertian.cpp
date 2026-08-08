@@ -1,7 +1,6 @@
 #include <cmath>
 #include <memory>
 
-#include "components/Transform.h"
 #include "materials/Lambertian.h"
 
 std::shared_ptr<Texture> Lambertian::getTexture() { return texture; }
@@ -33,24 +32,13 @@ void Lambertian::emit(Scene &scene, Intersection &inter) const {
   ray.setColor(emitted * texture->at(inter.getTexCoords()));
 }
 
-Color Lambertian::processLight(Scene &scene, Intersection &inter, EntityId light) const {
+Color Lambertian::processLight(Scene &scene, Intersection &inter, Intersection &lightInter) const {
   Vec3 normal = getNormal(inter);
-  auto &em = scene.getEntityManager();
-  auto material = em.get<Material>(light);
-  auto transform = em.get<Transform>(light);
+  auto &incident = lightInter.getIncidentRay();
 
-  auto lightPos = transform->getPosition();
-  auto origin = inter.getReflectionOrigin();
-  auto direction = normalize(lightPos - origin);
-  auto lightT = (lightPos - origin).length();
-
-  Intersection shadowInter;
-  shadowInter.setT(lightT);
-  shadowInter.setEntity(light);
-  shadowInter.setIncidentRay(Ray(origin, direction));
-  material->emit(scene, shadowInter);
-
-  auto lightColor = shadowInter.getIncidentRay().getColor();
+  auto lightColor = incident.getColor();
+  auto direction = incident.getDirection();
   float diffuse = std::fmin(dot(normal, direction), 1);
+
   return lightColor * diffuse;
 }

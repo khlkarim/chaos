@@ -21,7 +21,8 @@ Color Material::processLights(Scene &scene, Intersection &inter) const {
     auto &children = hierarchy->getChildren();
 
     for (auto light : children) {
-      if (em.has<Transform>(light)) {
+      if (em.has<Transform>(light) && em.has<Material>(light)) {
+        auto material = em.get<Material>(light);
         auto transform = em.get<Transform>(light);
 
         auto lightPos = transform->getPosition();
@@ -35,7 +36,12 @@ Color Material::processLights(Scene &scene, Intersection &inter) const {
         auto isDielectric = std::dynamic_pointer_cast<Dielectric>(hitMaterial) != nullptr;
 
         if (shadowInter.getT() == -1 || shadowInter.getT() >= lightT || isDielectric) {
-          emitted += processLight(scene, inter, light);
+          Intersection lightInter;
+          lightInter.setT(lightT);
+          lightInter.setEntity(light);
+          lightInter.setIncidentRay(shadowRay);
+          material->emit(scene, lightInter);
+          emitted += processLight(scene, inter, lightInter);
         }
       }
     }

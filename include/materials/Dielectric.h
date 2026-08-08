@@ -9,8 +9,8 @@ public:
   float getRefractiveIndex() const;
   void setRefractiveIndex(float n);
 
-  void scatter(Intersection &inter) const override;
-  void emit(Scene &scene, Intersection &inter) const override;
+  virtual void scatter(Intersection &inter) const override;
+  virtual void emit(Scene &scene, Intersection &inter) const override;
 
 private:
   float refractiveIndex;

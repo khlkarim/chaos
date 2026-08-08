@@ -13,8 +13,8 @@ public:
   std::shared_ptr<Texture> getTexture();
   void setTexture(std::shared_ptr<Texture> tex);
 
-  void scatter(Intersection &inter) const override;
-  void emit(Scene &scene, Intersection &inter) const override;
+  virtual void scatter(Intersection &inter) const override;
+  virtual void emit(Scene &scene, Intersection &inter) const override;
 
 private:
   std::shared_ptr<Texture> texture;

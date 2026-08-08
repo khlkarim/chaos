@@ -15,7 +15,7 @@ public:
   Color getInnerColor() const;
   void setInnerColor(Color c);
 
-  Color at(Vec2 texCoords) const override;
+  virtual Color at(Vec2 texCoords) const override;
 
 private:
   float edgeWidth;

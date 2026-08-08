@@ -9,7 +9,7 @@ public:
   Color getAlbedo() const;
   void setAlbedo(Color c);
 
-  Color at(Vec2 texCoords) const override;
+  virtual Color at(Vec2 texCoords) const override;
 
 private:
   Color albedo;

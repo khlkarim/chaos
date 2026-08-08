@@ -6,7 +6,7 @@
 class Transform : public Component {
 public:
   static const Component::Type TYPE = Component::Type::TRANSFORM;
-  Type getType() const override;
+  virtual Type getType() const override;
 
   Transform() = default;
   Transform(Vec3 p, Vec3 s = 1, Vec3 r = 0) : position(p), scale(s), rotation(r) {}

@@ -14,9 +14,10 @@ public:
   int getWidth() const;
   int getHeight() const;
   float getAspectRatio() const;
+  void setDimensions(int w, int h);
+
   float getViewportHeight() const;
   void setViewportHeight(float h);
-  void setDimensions(int w, int h);
 
   int getMaxDepth() const;
   void setMaxDepth(int depth);
