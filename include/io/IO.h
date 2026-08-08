@@ -8,7 +8,7 @@
 
 class IO {
 public:
-  enum FileFormat { PPM, PNG, JPEG, OBJ, CRT, JSON };
+  enum FileFormat { UNKNOWN, PPM, PNG, JPEG, OBJ, CRT, JSON };
 
   static void save(const Renderer &renderer, const std::string &path, FileFormat format);
 
@@ -16,5 +16,5 @@ public:
   static void load(Renderer &renderer, const std::string &path, FileFormat format);
 
   static std::shared_ptr<Mesh> loadMesh(const std::string &path, FileFormat format);
-  static std::shared_ptr<Image> loadImage(const std::string &path, FileFormat format);
+  static std::shared_ptr<Image> loadImage(const std::string &path, FileFormat format = UNKNOWN);
 };

@@ -59,6 +59,8 @@ private:
     std::vector<Object> objects;
   };
 
+  static Schema parse(const std::string &path);
+
   static void load(Scene &scene, const Schema &schema);
   static void load(Camera &camera, const Schema &schema);
   static void load(EntityManager &em, const Schema &schema);
@@ -68,7 +70,6 @@ private:
   static std::shared_ptr<Texture> loadTexture(const Schema &schema, int idx = 0);
   static std::shared_ptr<Material> loadMaterial(const Schema &schema, int idx = 0);
 
-  static Schema parse(const std::string &path);
   static Vec3 toVec3(const std::vector<float> &a);
   static Color toColor(const std::vector<float> &a);
 };

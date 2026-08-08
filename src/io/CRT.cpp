@@ -132,6 +132,7 @@ std::shared_ptr<Texture> CRT::loadTexture(const Schema &schema, int idx) {
   }
 
   auto &type = schema.textures[idx].type;
+
   if (type == "albedo") {
     return std::make_shared<SolidColor>(toColor(schema.textures[idx].albedo));
 
@@ -154,7 +155,7 @@ std::shared_ptr<Texture> CRT::loadTexture(const Schema &schema, int idx) {
     }
     s = s.substr(0, s.length() - 1) + schema.textures[idx].file_path;
 
-    return IO::loadImage(s, IO::PNG);
+    return IO::loadImage(s);
   }
 
   return std::make_shared<SolidColor>(COLOR_MAGENTA);
@@ -184,13 +185,36 @@ std::shared_ptr<Material> CRT::loadMaterial(const Schema &schema, int idx) {
     }
   }
 
+  std::shared_ptr<Material> material = nullptr;
   auto type = schema.materials[idx].type;
+
   if (type == "reflective") {
-    return std::make_shared<Metal>(texture);
+    material = std::make_shared<Metal>(texture);
   } else if (type == "refractive") {
-    return std::make_shared<Dielectric>(schema.materials[idx].ior);
+    material = std::make_shared<Dielectric>(schema.materials[idx].ior);
   } else {
-    return std::make_shared<Lambertian>(texture);
+    material = std::make_shared<Lambertian>(texture);
+  }
+
+  material->setSmoothShading(schema.materials[idx].smooth_shading);
+  return material;
+}
+
+Vec3 CRT::toVec3(const std::vector<float> &a) {
+  if (a.size() < 3) {
+    return 0;
+  } else {
+    return Vec3(a[0], a[1], a[2]);
+  }
+}
+
+Color CRT::toColor(const std::vector<float> &a) {
+  if (a.size() < 3) {
+    return 0;
+  } else if (a.size() == 3) {
+    return Color(a[0], a[1], a[2], 1);
+  } else {
+    return Color(a[0], a[1], a[2], a[3]);
   }
 }
 
@@ -478,7 +502,7 @@ CRT::Schema CRT::parse(const std::string &path) {
         std::cout << "Member does not exist: ior" << std::endl;
       } else {
         material.ior = materials[i]["ior"].GetFloat();
-        std::cout << "Found material ior" << std::endl;
+        std::cout << "Found material ior: " << material.ior << std::endl;
       }
 
       schema.materials.push_back(material);
@@ -548,22 +572,4 @@ CRT::Schema CRT::parse(const std::string &path) {
   }
 
   return schema;
-}
-
-Vec3 CRT::toVec3(const std::vector<float> &a) {
-  if (a.size() < 3) {
-    return 0;
-  } else {
-    return Vec3(a[0], a[1], a[2]);
-  }
-}
-
-Color CRT::toColor(const std::vector<float> &a) {
-  if (a.size() < 3) {
-    return 0;
-  } else if (a.size() == 3) {
-    return Color(a[0], a[1], a[2], 1);
-  } else {
-    return Color(a[0], a[1], a[2], a[3]);
-  }
 }
