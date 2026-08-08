@@ -2,4 +2,3 @@ build
 local
 .clang*
 /videos/model/*.png
-/crt
